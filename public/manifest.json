@@ -1,0 +1,17 @@
+{
+  "lang": "en-uk",
+  "name": "Bird Sighting app",
+  "short_name": "Bird Sightings",
+  "description": "An app for logging and viewing bird sightings",
+  "start_url": "/",
+  "background_color": "#2f3d58",
+  "theme_color": "#2f3d58",
+  "orientation": "any",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/images/image_icon.png",
+      "sizes": "512x512"
+    }
+  ]
+}
