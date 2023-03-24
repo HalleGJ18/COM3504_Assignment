@@ -3,9 +3,11 @@
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="manifest" href="/manifest.json">
 
 </head>
 <body>
+<% include ../public/partials/header.ejs %>
 <h1><%= title %></h1>
 
 
@@ -25,4 +27,5 @@
 </form>
 <div id="results" style="margin-top:30px"></div>
 </body>
+
 </html>
