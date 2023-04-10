@@ -3,7 +3,9 @@ var router = express.Router();
 var bodyParser= require("body-parser");
 
 var sighting = require('../controllers/sightings');
-var sightingList = require('../controllers/sightingsList');
+//var sightingList = require('../controllers/sightingsList');
+var getData = require('../controllers/sightingsList');
+var Sighting = require('../models/sightings');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -24,14 +26,23 @@ router.post('/add', function(req, res) {
 });
 
 router.get('/list', function(req, res, next) {
-  res.render('list', {
-    title: 'All birdos',
-    data: sightingList }
-  );
+  var sightingsList = [];
+  Sighting.find({}, function(err, results) {
+    if (err) return next(err);
+    for(result of results) {
+      sightingsList.push(result)
+    }
+    console.log(results);
+    res.render('list', {
+      title: 'All birdos',
+      data: sightingsList }
+    );
+  });
 });
 
 
 
+""
 //router.post('/index', character.getAge);
 
 module.exports = router;
