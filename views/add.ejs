@@ -11,7 +11,7 @@
 <h1><%= title %></h1>
 
 
-<form id=“xForm" method="post" action="/add">
+<form id=“xForm" enctype="multipart/form-data" method="post" action="/add">
     <label for='birdname'>Bird name:</label>
     <input type="text" name="birdname" id="birdname" value="Birdo">
     <p><label for='date'>Date:</label>
@@ -22,6 +22,10 @@
     </p>
     <p><label for='Description'>Description:</label>
         <input type="text" name="description" id="description" value="A beautiful Birdo!">
+        <p><label for="myImage">Choose an image</label>
+    <div >
+        <input type="file" id="myImage" name="myImg" accept="image/*" required>
+    </div>
     </p>
     <p><input type="submit" name="g" value="Submit" id="g"></p>
 </form>

@@ -12,7 +12,8 @@ exports.create = function (req, res) {
         bird_name: userData.birdname,
         date: userData.date,
         location: userData.location,
-        description: userData.description
+        description: userData.description,
+        img: req.file.path
     });
 
     sighting.save(function (err, results) {

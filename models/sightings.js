@@ -7,7 +7,8 @@ var SightingSchema = new Schema(
         bird_name: {type: String, required: true, max: 100},
         date: {type: String, required: true, max: 100},
         location: {type: String, required: true, max: 100},
-        description: {type: String, required: true, max: 100}
+        description: {type: String, required: true, max: 100},
+        img: {type: String }
     }
 );
 

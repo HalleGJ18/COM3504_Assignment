@@ -1,11 +1,27 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser= require("body-parser");
-
 var sighting = require('../controllers/sightings');
 //var sightingList = require('../controllers/sightingsList');
 var getData = require('../controllers/sightingsList');
 var Sighting = require('../models/sightings');
+var multer = require('multer');
+
+// storage defines the storage options to be used for file upload with multer
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/');
+  },
+  filename: function (req, file, cb) {
+    var original = file.originalname;
+    var file_extension = original.split(".");
+    // Make the file name the date + the file extension
+    filename =  Date.now() + '.' + file_extension[file_extension.length-1];
+    cb(null, filename);
+  }
+});
+var upload = multer({ storage: storage });
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -21,7 +37,7 @@ router.get('/add', function(req, res, next) {
   res.render('add', { title: 'Add a new Sighting to the DB' });
 });
 
-router.post('/add', function(req, res) {
+router.post('/add',upload.single('myImg'), function(req, res) {
   sighting.create(req,res);
 });
 
@@ -31,11 +47,12 @@ router.get('/list', function(req, res, next) {
     if (err) return next(err);
     for(result of results) {
       sightingsList.push(result)
+      result.img = result.img.slice(7)
     }
-    console.log(results);
+    //console.log(results);
     res.render('list', {
       title: 'All birdos',
-      data: sightingsList }
+      data: sightingsList}
     );
   });
 });
