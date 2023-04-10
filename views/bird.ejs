@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body>
+<h1><%= title %></h1>
+<h2>Hi bird</h2>
+
+<span>
+    <h3>Location:</h3>
+    <p><%= birdData.location %></p>
+</span>
+
+<span>
+    <h3>Bird name:</h3>
+    <p><%= birdData.bird_name %></p>
+</span>
+
+<span>
+    <h3>Date seen:</h3>
+    <p><%= birdData.date %></p>
+</span>
+
+<span>
+    <h3>Bird description:</h3>
+    <p><%= birdData.description %></p>
+</span>
+
+<span>
+    <h3>Bird image:</h3>
+    <p><img src="<%= birdData.img %>"></p>
+</span>
+
+
+
+</body>
+</script>
+</html>

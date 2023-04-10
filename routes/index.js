@@ -41,13 +41,14 @@ router.post('/add',upload.single('myImg'), function(req, res) {
   sighting.create(req,res);
 });
 
-router.get('/list', function(req, res, next) {
+router.get('/birds', function(req, res, next) {
   var sightingsList = [];
   Sighting.find({}, function(err, results) {
     if (err) return next(err);
     for(result of results) {
       sightingsList.push(result)
       result.img = result.img.slice(7)
+      result.detailedLink = "/bird?id=" + result.id
     }
     //console.log(results);
     res.render('list', {
@@ -57,6 +58,20 @@ router.get('/list', function(req, res, next) {
   });
 });
 
+router.get('/bird', function(req, res, next) {
+
+  Sighting.find({_id: req.query.id}, function(err, results) {
+    if (err) return next(err);
+    console.log(results);
+    console.log(results[0].img);
+    results[0].img = results[0].img.slice(7)
+
+    res.render('bird', {
+      title: 'One birdo',
+      birdData: results[0]}
+    );
+  });
+});
 
 
 ""
