@@ -45,7 +45,7 @@ router.get('/birds', function(req, res, next) {
   var sightingsList = [];
   Sighting.find({}, function(err, results) {
     if (err) return next(err);
-    for(result of results) {
+    for(let result of results) {
       sightingsList.push(result)
       result.img = result.img.slice(7)
       result.detailedLink = "/bird?id=" + result.id
