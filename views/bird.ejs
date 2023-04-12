@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="/javascripts/index.js"></script
+</head>
+
+<body onload="init(<%= JSON.stringify(birdData._id) %>)">
+<h1><%= title %></h1>
+<h2>Hi bird</h2>
+
+<span>
+    <h3>Location:</h3>
+    <p><%= birdData.location %></p>
+</span>
+
+<span>
+    <h3>Bird name:</h3>
+    <p><%= birdData.bird_name %></p>
+</span>
+
+<span>
+    <h3>Date seen:</h3>
+    <p><%= birdData.date %></p>
+</span>
+
+<span>
+    <h3>Bird description:</h3>
+    <p><%= birdData.description %></p>
+</span>
+
+<span>
+    <h3>Bird image:</h3>
+    <p><img src="<%= birdData.img %>"></p>
+</span>
+
+<h3>Chat for this birdo:</h3>
+
+<div id="chat_interface">
+    <div>
+        <div id="who_you_are" style="display: inline"></div>, you are in room: <div id="in_room" style="display: inline"></div>
+    </div>
+    <div id="history" class="boxed"></div>
+    <div id="input" class="bottom boxed">
+        <form onsubmit="return false;" style="width: 100%">
+            <p>
+                <label for="name"> chat: </label>
+                <input type="text" id="chat_input" name="chat_input" style="width: 80%">
+                <button id="chat_send" onclick="sendChatText()">Send</button>
+            </p>
+        </form>
+    </div>
+</div>
+
+</body>
+</script>
+</html>

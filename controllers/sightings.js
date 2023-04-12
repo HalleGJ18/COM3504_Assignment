@@ -2,6 +2,8 @@ var bodyParser = require("body-parser");
 //var req = require('request');
 var Sighting = require('../models/sightings');
 var path = require('path');
+var mongoose = require('mongoose');
+var db = require('../databases/sightings.js')
 
 
 exports.create = function (req, res) {
@@ -10,16 +12,18 @@ exports.create = function (req, res) {
         bird_name: userData.birdname,
         date: userData.date,
         location: userData.location,
-        description: userData.description
+        description: userData.description,
+        img: req.file.path
     });
 
     sighting.save(function (err, results) {
         if (err)
             res.status(500).send('Invalid data!');
-    //ntent-Type', 'application/json');
-       // res.send(JSON.stringify(character));
-        res.json({sighting: sighting});
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(sighting));
+
     });
+
 };
 
 
