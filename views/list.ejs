@@ -12,20 +12,62 @@
 <% include ../public/partials/header.ejs %>
 <h1><%= title %></h1>
 
-<ul>
+
+<!--    <% for(var i=0; i<data.length; i++) {%>-->
+<!--        <div class ="card">-->
+<!--            <div class="card-body">-->
+
+<!--                    <ul class="list-group list-group-horizontal">-->
+<!--                        <li class="list-group-item"><%= data[i].bird_name %></li>-->
+<!--                        <li class="list-group-item"><%= data[i].date %></li>-->
+<!--                        <li class="list-group-item"><%= data[i].location %></li>-->
+<!--                        <li class="list-group-item"><%= data[i].description %></li>-->
+<!--                        <li class="list-group-item"><%= data[i].img %></li>-->
+<!--                        <li class="list-group-item"><img src="<%= data[i].img %>"></li>-->
+<!--                        <li class="list-group-item"><a href="<%= data[i].detailedLink %>">Detailed view</a></li>-->
+<!--                    </ul>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    <% } %>-->
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Photo</th>
+        <th scope="col">Bird Name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Location</th>
+        <th scope="col">Description</th>
+        <th scope="col">Img data</th>
+        <th scope="col">Detailed view</th>
+    </tr>
+    </thead>
+    <tbody>
 
     <% for(var i=0; i<data.length; i++) {%>
-        <li>
-            <span><%= data[i].bird_name %></span>
-            <span><%= data[i].date %></span>
-            <span><%= data[i].location %></span>
-            <span><%= data[i].description %></span>
-            <span><%= data[i].img %></span>
-            <span><img src="<%= data[i].img %>"></span>
-            <span><a href="<%= data[i].detailedLink %>">Detailed view</a></span>
-        </li>
+        <tr>
+            <th scope="row"><%= i + 1 %></th>
+            <td class="col-md-2 px-0">
+                <div class="container" >
+                    <img src="<%= data[i].img %>" class="img-fluid img-thumbnail">
+                </div>
+            </td>
+            <td><%= data[i].bird_name %></td>
+            <td><%= data[i].date %></td>
+            <td><%= data[i].location %></td>
+            <td><%= data[i].description %></td>
+            <td><%= data[i].img %></td>
+            <td><a href="<%= data[i].detailedLink %>">Detailed view</a></td>
+        </tr>
     <% } %>
-</ul>
+
+
+
+    </tbody>
+</table>
+
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
