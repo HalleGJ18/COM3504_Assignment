@@ -13,7 +13,8 @@ self.addEventListener('install', event => {
                 '/',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
-                '/partials/footer.ejs'
+                '/partials/footer.ejs',
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css'
             ]);
         }
         catch{
