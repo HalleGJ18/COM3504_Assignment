@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Bird Sighting App';
+const CACHE_NAME = 'Bird Sightings App';
 
 
 // Use the install event to pre-cache all initial resources.
@@ -14,7 +14,10 @@ self.addEventListener('install', event => {
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
-                'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css'
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css',
+                'https://code.jquery.com/jquery-3.2.1.slim.min.js',
+                'https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js'
             ]);
         }
         catch{
@@ -26,12 +29,13 @@ self.addEventListener('install', event => {
 
 //clear cache on reload
 self.addEventListener('activate', event => {
+    console.log('activate')
 // Remove old caches
     event.waitUntil(
         (async () => {
             const keys = await caches.keys();
             return keys.map(async (cache) => {
-                if(cache !== cacheName) {
+                if(cache !== CACHE_NAME) {
                     console.log('Service Worker: Removing old cache: '+cache);
                     return await caches.delete(cache);
                 }
