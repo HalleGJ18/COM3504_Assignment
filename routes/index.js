@@ -52,7 +52,7 @@ router.get('/birds', function(req, res, next) {
     }
     //console.log(results);
     res.render('list', {
-      title: 'All birdos',
+      title: 'All sightings',
       data: sightingsList}
     );
   });
