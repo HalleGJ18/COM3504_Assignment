@@ -12,42 +12,46 @@
 <% include ../public/partials/header.ejs %>
 <h1 class="text-center p-2"><%= title %></h1>
 
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Photo</th>
-        <th scope="col">Bird Name</th>
-        <th scope="col">Date</th>
-        <th scope="col">Location</th>
-        <th scope="col">Description</th>
-        <th scope="col">Added by</th>
-        <th scope="col">Detailed view</th>
-    </tr>
-    </thead>
-    <tbody>
-
-    <% for(var i=0; i<data.length; i++) {%>
+<div class="container" style="max-width: 95%">
+    <table class="table table-bordered">
+        <thead>
         <tr>
-            <th scope="row"><%= i + 1 %></th>
-            <td class="col-md-2 px-0">
-                <div class="container" >
-                    <img src="<%= data[i].img %>" class="img-fluid img-thumbnail">
-                </div>
-            </td>
-            <td><%= data[i].bird_name %></td>
-            <td><%= data[i].date %></td>
-            <td><%= data[i].location %></td>
-            <td><%= data[i].description %></td>
-            <td>user</td>
-            <td><a href="<%= data[i].detailedLink %>">Detailed view</a></td>
+            <th scope="col">#</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Bird Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">Location</th>
+            <th scope="col">Description</th>
+            <th scope="col">Added by</th>
+            <th scope="col">Detailed view</th>
         </tr>
-    <% } %>
+        </thead>
+        <tbody>
+
+        <% for(var i=0; i<data.length; i++) {%>
+            <tr>
+                <th scope="row"><%= i + 1 %></th>
+                <td class="col-md-2 px-0">
+                    <div class="container" >
+                        <img src="<%= data[i].img %>" class="img-fluid img-thumbnail">
+                    </div>
+                </td>
+                <td><%= data[i].bird_name %></td>
+                <td><%= data[i].date %></td>
+                <td><%= data[i].location %></td>
+                <td><%= data[i].description %></td>
+                <td>user</td>
+                <td><a href="<%= data[i].detailedLink %>">Detailed view</a></td>
+            </tr>
+        <% } %>
 
 
 
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
+
+
 
 
 
