@@ -24,7 +24,7 @@
     <div class="card mb-3 w-75 mx-auto">
         <div class="card-body">
             <h2 class="card-title"><%= birdData.bird_name %></h2>
-            <p class="card-text">Date sighted: <%= birdData.date %></p>
+            <p class="card-text">Date sighted: <%= new Date(birdData.date).toLocaleString() %></p>
             <p class="card-text">Location: <%= birdData.location %></p>
             <p class="card-text">Description: <%= birdData.description %></p>
             <p class="card-text">Identification: (knowledge graph result here)</p>
