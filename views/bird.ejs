@@ -2,6 +2,7 @@
 <html>
 <head>
     <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="manifest" href="/manifest.json">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -10,51 +11,63 @@
 </head>
 
 <body onload="init(<%= JSON.stringify(birdData._id) %>)">
-<h1><%= title %></h1>
-<h2>Hi bird</h2>
+<% include ../public/partials/header.ejs %>
 
-<span>
-    <h3>Location:</h3>
-    <p><%= birdData.location %></p>
-</span>
+<h1 class="text-center p-2">Sighting details for <%= birdData.bird_name %></h1>
 
-<span>
-    <h3>Bird name:</h3>
-    <p><%= birdData.bird_name %></p>
-</span>
-
-<span>
-    <h3>Date seen:</h3>
-    <p><%= birdData.date %></p>
-</span>
-
-<span>
-    <h3>Bird description:</h3>
-    <p><%= birdData.description %></p>
-</span>
-
-<span>
-    <h3>Bird image:</h3>
-    <p><img src="<%= birdData.img %>"></p>
-</span>
-
-<h3>Chat for this birdo:</h3>
-
-<div id="chat_interface">
-    <div>
-        <div id="who_you_are" style="display: inline"></div>, you are in room: <div id="in_room" style="display: inline"></div>
+<div class="d-flex w-75 mx-auto">
+    <div class="card mb-3 w-75 mx-auto">
+        <div class="card-body">
+            <img class="card-img-top" src="<%= birdData.img %>" alt="Card image cap">
+        </div>
     </div>
-    <div id="history" class="boxed"></div>
-    <div id="input" class="bottom boxed">
-        <form onsubmit="return false;" style="width: 100%">
-            <p>
-                <label for="name"> chat: </label>
-                <input type="text" id="chat_input" name="chat_input" style="width: 80%">
-                <button id="chat_send" onclick="sendChatText()">Send</button>
-            </p>
-        </form>
+    <div class="card mb-3 w-75 mx-auto">
+        <div class="card-body">
+            <h2 class="card-title"><%= birdData.bird_name %></h2>
+            <p class="card-text">Date sighted: <%= new Date(birdData.date).toLocaleString() %></p>
+            <p class="card-text">Location: <%= birdData.location %></p>
+            <p class="card-text">Description: <%= birdData.description %></p>
+            <p class="card-text">Identification: (knowledge graph result here)</p>
+            <p class="card-text">Added by: (username here)</p>
+            <!--        <p class="card-text"><small class="text-muted">hello</small></p>-->
+        </div>
     </div>
 </div>
+
+
+
+<div class="card mb-3 w-75 mx-auto">
+    <div class="card-body">
+
+        <h3 class="card-body">Chat for <%= birdData.bird_name %>:</h3>
+
+        <div id="chat_interface">
+            <div>
+                <div id="who_you_are" style="display: inline"></div>, you are in room: <div id="in_room" style="display: inline"></div>
+            </div>
+            <div id="history" class="boxed"></div>
+            <div id="input" class="bottom boxed">
+                <form onsubmit="return false;" style="width: 100%">
+                    <p>
+                        <label for="name"> chat: </label>
+                        <input type="text" id="chat_input" name="chat_input" style="width: 80%">
+                        <button class="btn btn-secondary btn-sm" id="chat_send" onclick="sendChatText()">Send</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 
 </body>
 </script>

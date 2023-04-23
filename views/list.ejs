@@ -2,29 +2,104 @@
 <html>
 <head>
     <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="manifest" href="/manifest.json">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
 </head>
 <body>
 <% include ../public/partials/header.ejs %>
-<h1><%= title %></h1>
+<h1 class="text-center p-2"><%= title %></h1>
 
-<ul>
+<div class="container p-2" style="max-width: 95%">
+    <div class="btn-toolbar p-2" role="toolbar" aria-label="Toolbar with button groups">
+        <h5 class="pr-2 m-0">Sort by: </h5>
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-outline-secondary" onclick="sortNameAscending()">Name Ascending</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="sortNameDescending()">Name Descending</button>
+        </div>
+        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-outline-secondary" onclick="sortDateAscending()">Date Ascending</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="sortDateDescending()">Date Descending</button>
+        </div>
+    </div>
+</div>
 
-    <% for(var i=0; i<data.length; i++) {%>
-        <li>
-            <span><%= data[i].bird_name %></span>
-            <span><%= data[i].date %></span>
-            <span><%= data[i].location %></span>
-            <span><%= data[i].description %></span>
-            <span><%= data[i].img %></span>
-            <span><img src="<%= data[i].img %>"></span>
-            <span><a href="<%= data[i].detailedLink %>">Detailed view</a></span>
-        </li>
-    <% } %>
-</ul>
+
+
+<div class="container" style="max-width: 95%">
+    <table class="table table-bordered" id="sightingsTable">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Bird Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">Location</th>
+            <th scope="col">Description</th>
+            <th scope="col">Added by</th>
+            <th scope="col">Detailed view</th>
+        </tr>
+        </thead>
+
+        <tbody id="sightingsTableData">
+
+        <% for(var i=0; i<data.length; i++) {%>
+
+            <tr>
+                <th scope="row"><%= i + 1 %></th>
+                <td class="col-md-2 px-0">
+                    <div class="container" >
+                        <img src="<%= data[i].img %>" class="img-fluid img-thumbnail">
+                    </div>
+                </td>
+                <td><%= data[i].bird_name %></td>
+                <td><%= new Date(data[i].date).toLocaleString() %></td>
+                <td><%= data[i].location %></td>
+                <td><%= data[i].description %></td>
+                <td>user</td>
+                <td><a href="<%= data[i].detailedLink %>" class="btn btn-outline-primary stretched-link">Detailed view</a></td>
+            </tr>
+        <% } %>
+
+
+        </tbody>
+
+    </table>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<script>
+    const tbody = document.getElementById("sightingsTableData");
+
+    // Sort table by given column
+    function tableSort(colNum, cmp) {
+        let rows = [...tbody.rows];
+        rows.sort((a, b) => cmp(a.cells[colNum].textContent, b.cells[colNum].textContent))
+            .map(row => tbody.appendChild(row));
+    }
+
+    function sortDateAscending() {
+        tableSort(3, (a, b) => a.localeCompare(b)); // assuming that location column has strings
+    }
+
+    function sortDateDescending() {
+        tableSort(3, (a, b) => b.localeCompare(a)); // assuming that location column has strings
+    }
+
+    function sortNameAscending() {
+        tableSort(2, (a, b) => a.localeCompare(b)); // assuming that location column has strings
+    }
+
+    function sortNameDescending() {
+        tableSort(2, (a, b) => b.localeCompare(a)); // assuming that location column has strings
+    }
+</script>
 
 </body>
 </script>
