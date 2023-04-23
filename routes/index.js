@@ -68,13 +68,36 @@ router.get('/bird', function(req, res, next) {
 
     res.render('bird', {
       title: 'One birdo',
-      birdData: results[0]}
+      birdData: results[0],
+      historyMessages:results[0].chatMessages}
     );
   });
 });
 
+router.post('/bird', (req, res) => {
+  const { birdId, chatMessage, username } = req.body;
+
+  Sighting.findById(birdId, (err, sighting) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error updating user');
+    } else {
+      sighting.chatMessages.push({
+        chatMessage: chatMessage,
+        username: username
+      });
+      sighting.save((err, savedSighting) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send('Error updating bird');
+        } else {
+          res.send(savedSighting);
+        }
+      });
+    }
+  });
+});
 
 ""
-//router.post('/index', character.getAge);
 
 module.exports = router;

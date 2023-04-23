@@ -45,10 +45,17 @@ let socket = io();
  * it initialises the interface and the expected socket messages
  * plus the associated actions
  */
-function init(birdId) {
+function init(birdId, historyMessages) {
     // it sets up the interface so that userId and room are selected
 
     connectToRoom(birdId);
+
+    if(historyMessages.length > 0) {
+        console.log("write on history yee")
+        for(let historyMessage of historyMessages) {
+            writeOnHistory('<b>' + historyMessage.username + ':</b> ' + historyMessage.chatMessage);
+        }
+    }
 
     // called when someone joins the room. If it is someone else it notifies the joining of the room
     socket.on('joined', function (room, userId) {
@@ -78,6 +85,12 @@ function init(birdId) {
 function sendChatText() {
     let chatText = document.getElementById('chat_input').value;
     socket.emit('chat', roomNo, name, chatText);
+
+    //const queryParams = new URLSearchParams(window.location.search);
+    //const birdId = queryParams.get('id');
+    console.log(name)
+    console.log(roomNo)
+    addChatMessage(roomNo, chatText, name)
 }
 
 /**
@@ -102,4 +115,26 @@ function writeOnHistory(text) {
     paragraph.innerHTML = text;
     history.appendChild(paragraph);
     document.getElementById('chat_input').value = '';
+}
+
+function addChatMessage(birdId,chatMessage, username) {
+    fetch('/bird', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            birdId: birdId,
+            chatMessage: chatMessage,
+            username: username
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.log(response)
+            console.error(error);
+        });
 }

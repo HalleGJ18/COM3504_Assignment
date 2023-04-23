@@ -10,7 +10,7 @@
     <script src="/javascripts/index.js"></script
 </head>
 
-<body onload="init(<%= JSON.stringify(birdData._id) %>)">
+<body onload="init(<%= JSON.stringify(birdData._id) %>, <%= JSON.stringify(historyMessages) %>)">
 <% include ../public/partials/header.ejs %>
 
 <h1 class="text-center p-2">Sighting details for <%= birdData.bird_name %></h1>

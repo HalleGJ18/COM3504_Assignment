@@ -2,13 +2,21 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
+var chatMessagesSchema = new Schema(
+    {
+            chatMessage: {type: String },
+            username: {type: String }
+    }
+)
+
 var SightingSchema = new Schema(
     {
         bird_name: {type: String, required: true, max: 100},
         date: {type: String, required: true, max: 100},
         location: {type: String, required: true, max: 100},
         description: {type: String, required: true, max: 100},
-        img: {type: String }
+        img: {type: String },
+            chatMessages: [chatMessagesSchema]
     }
 );
 
