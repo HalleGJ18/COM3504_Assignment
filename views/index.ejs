@@ -30,4 +30,50 @@
         navigator.serviceWorker.register('/sw.js', { scope: '/' });
     }
 </script>
+
+<script>
+    let db;
+    //Opening the db
+    const request = indexedDB.open('sightingsApp', 3);
+
+    request.onupgradeneeded = function(event){
+        db = request.result;
+        if (!db.objectStoreNames.contains('userInfo')) { // if there's no "books" store
+            db.createObjectStore("userInfo", { keyPath: 'id', autoIncrement: true} ) // create it
+            // objectStore.createIndex('username','username',{ unique: 'false'});
+        }
+    };
+
+    request.onsuccess = function(event) {
+        console.log("success")
+        db = request.result;
+
+        let transaction = db.transaction(['userInfo'], 'readwrite');
+        let userInfo = transaction.objectStore('userInfo');
+        //adding database
+        let user = {id: 1, username:'testUser'};
+        let req = userInfo.add(user);
+
+        //operation status
+        request.onsuccess = function(event) {
+            console.log('Success:', request.result);
+        };
+        request.onerror = function(event) {
+            console.error('Task unsuccessful:', request.error);
+        };
+    };
+    //database connection
+    request.onerror = function(event) {
+        console.error("Database Connection Error", request.error);
+    };
+
+
+
+    // const objectStore = db.createObjectStore('userInfo', { keyPath: 'id', autoIncrement: true});
+    //
+    // objectStore.createIndex('username','username',{ unique: 'false'});
+
+
+
+</script>
 </html>
