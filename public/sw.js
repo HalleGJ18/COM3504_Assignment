@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SightingsAppV3'; // update the name to get the sw to recache if resources have been updated
+const CACHE_NAME = 'SightingsAppV2'; // update the name to get the sw to recache if resources have been updated
 
 
 // Use the install event to pre-cache all initial resources.
@@ -11,7 +11,8 @@ self.addEventListener('install', event => {
         try {
             const cache = await caches.open(CACHE_NAME);
             cache.addAll([
-                '/',
+                '/views/index.html',
+                '/javascripts/database.js',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -51,9 +52,20 @@ self.addEventListener('fetch', function(event) {
 
     console.log("Url", event.request.url);
 
-    event.respondWith(
-        caches.match(event.request).then(function(response) {
-            return response || fetch(event.request);
-        })
-    );
+    if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').includes('/'))) {
+        event.respondWith(
+            fetch(event.request.url).catch(error => {
+                // Return the offline page
+                return caches.match('/views/index.html');
+            })
+        );
+    }
+    else{
+        // Respond with everything else if we can
+        event.respondWith(caches.match(event.request)
+            .then(function (response) {
+                return response || fetch(event.request);
+            })
+        );
+    }
 });
