@@ -13,6 +13,7 @@ exports.create = function (req, res) {
         date: userData.date,
         location: userData.location,
         description: userData.description,
+        addedBy: userData.addedBy,
         img: req.file.path
     });
 

@@ -15,6 +15,7 @@ var SightingSchema = new Schema(
         date: {type: String, required: true, max: 100},
         location: {type: String, required: true, max: 100},
         description: {type: String, required: true, max: 100},
+        addedBy: {type: String, max:100},
         img: {type: String },
             chatMessages: [chatMessagesSchema]
     }
