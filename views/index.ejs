@@ -8,12 +8,77 @@
 
 
 </head>
-<body>
+
 <% include ../public/partials/header.ejs %>
 
 <h1 class="text-center p-2">Bird Sightings Logger</h1>
 
 <p class="text-center p-2">Login</p>
+
+
+<form id="loginUsers">
+    <label for="name">Name</label>
+    <input type = "text" id="name" name="name" value="name" required>
+
+
+    <button type="submit">Login</button>
+</form>
+
+
+<script>
+
+    let userform = document.getElementById('loginUsers');
+
+    var db;
+
+    const request = indexedDB.open('UserInformation');
+
+
+    request.onerror = () => {
+        console.error("Connection Error");
+    };
+
+
+
+    request.onupgradeneeded = () => {
+        db = request.result;
+        //creating object
+
+        if(!db.objectStoreNames.contains("users")){
+            db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
+        }
+    }
+
+
+
+
+    function loginUsers() {
+        let uname = document.getElementById('name').value;
+        console.log(uname);
+
+        var db;
+        const request = indexedDB.open('UserInformation');
+
+
+        request.onsuccess = () => {
+            db = request.result;
+            console.log("success")
+
+            const t = db.transaction(["users"],'readwrite').objectStore("users");
+
+
+            let userinfo = {
+                name: uname
+            };
+            console.log(userinfo)
+
+            t.add(userinfo);
+
+        };
+    };
+
+    userform.addEventListener('submit', loginUsers);
+</script>
 
 
 
