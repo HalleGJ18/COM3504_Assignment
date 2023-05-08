@@ -6,10 +6,10 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="manifest" href="/manifest.json">
 
-
+    <script src="/javascripts/index.js"></script>
 
 </head>
-<body>
+<body onload="getLocation()">
 
 <% include ../public/partials/header.ejs %>
 <h1 class="text-center p-2"><%= title %></h1>
@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label for='Location'>Location:</label>
-                <input type="text" name="location" id="location" value="Sheffield" class="form-control">
+                <input type="text" name="location" id="location" value="United Kingdom" class="form-control">
             </div>
 
             <div class="form-group">

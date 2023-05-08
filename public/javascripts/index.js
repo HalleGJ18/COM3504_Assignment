@@ -190,3 +190,28 @@ function addChatMessage(birdId,chatMessage, username) {
             console.error(error);
         });
 }
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            console.log("Latitude: " + position.coords.latitude +
+                "\nLongitude: " + position.coords.longitude);
+
+            var query = 'http://api.positionstack.com/v1/reverse?access_key=359ea6dd8c8570c7df19d440a9de2234&query=' +
+                position.coords.latitude + "," +
+                position.coords.longitude
+            fetch(query)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('location').value = data.data[0].locality;
+
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
