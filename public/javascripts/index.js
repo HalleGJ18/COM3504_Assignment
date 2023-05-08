@@ -61,12 +61,9 @@ function init(birdId, historyMessages) {
     socket.on('joined', function (room, userId) {
         if (userId === name) {
             // it enters the chat
-            document.getElementById('who_you_are').innerHTML= userId;
+            //document.getElementById('who_you_are').innerHTML= userId;
             document.getElementById('in_room').innerHTML= ' '+room;
 
-        } else {
-            // notifies that someone has joined the room
-            writeOnHistory('<b>'+userId+'</b>' + ' joined room ' + room);
         }
     });
     // called when a message is received
@@ -85,11 +82,6 @@ function init(birdId, historyMessages) {
 function sendChatText() {
     let chatText = document.getElementById('chat_input').value;
     socket.emit('chat', roomNo, name, chatText);
-
-    //const queryParams = new URLSearchParams(window.location.search);
-    //const birdId = queryParams.get('id');
-    console.log(name)
-    console.log(roomNo)
     addChatMessage(roomNo, chatText, name)
 }
 
@@ -98,9 +90,69 @@ function sendChatText() {
  * interface
  */
 function connectToRoom(birdId) {
+
+    function getValueFromObjectStore(dbName, storeName, key) {
+        return new Promise((resolve, reject) => {
+            // Open the database
+            const request = indexedDB.open(dbName);
+
+            request.onerror = () => {
+                reject(new Error('Failed to open database'));
+            };
+
+            request.onsuccess = () => {
+                const db = request.result;
+
+                // Start a transaction and retrieve the object store
+                const transaction = db.transaction(storeName, 'readonly');
+                const objectStore = transaction.objectStore(storeName);
+
+                const countRequest = objectStore.count();
+                countRequest.onsuccess = () => {
+                    console.log(countRequest.result);
+                    const getRequest = objectStore.get(countRequest.result);
+
+                    getRequest.onerror = () => {
+                        reject(new Error('Failed to retrieve value from object store'));
+                    };
+
+                    getRequest.onsuccess = () => {
+                        const value = getRequest.result;
+
+                        if (value) {
+                            resolve(value);
+                        } else {
+                            reject(new Error('Value not found in object store'));
+                        }
+                    };
+                };
+            };
+
+            request.onupgradeneeded = () => {
+                reject(new Error('Database upgrade needed'));
+            };
+        });
+    }
+
+    getValueFromObjectStore('UserInformation', 'users', 1)
+        .then(value => {
+            console.log('Retrieved value:', value['username']);
+            console.log("ayaayayayaa")
+            name = value['username']
+            document.getElementById('who_you_are').innerHTML= name;
+            document.getElementById('addedBy').value = value['username'];
+
+        })
+        .catch(error => {
+            console.error('Error retrieving value:', error);
+        });
+
+
+
+
     roomNo = birdId; //this will be the id of the sighting
-    name = Math.round(Math.random() * 10000); //this will be the name the user gives on login
-    if (!name) name = 'Unknown-' + Math.random();
+    //name = Math.round(Math.random() * 10000); //this will be the name the user gives on login
+    //if (!name) name = 'Unknown-' + Math.random();
     socket.emit('create or join', roomNo, name);
 
 }

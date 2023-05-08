@@ -56,6 +56,9 @@ router.get('/birds', function(req, res, next) {
       data: sightingsList}
     );
   });
+
+
+
 });
 
 router.get('/bird', function(req, res, next) {
