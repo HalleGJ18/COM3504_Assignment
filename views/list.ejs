@@ -57,7 +57,7 @@
                 <td><%= new Date(data[i].date).toLocaleString() %></td>
                 <td><%= data[i].location %></td>
                 <td><%= data[i].description %></td>
-                <td>user</td>
+                <td><%= data[i].addedBy %></td>
                 <td><a href="<%= data[i].detailedLink %>" class="btn btn-outline-primary stretched-link">Detailed view</a></td>
             </tr>
         <% } %>

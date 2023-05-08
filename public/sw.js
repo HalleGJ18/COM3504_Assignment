@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SightingsAppV3'; // update the name to get the sw to recache if resources have been updated
+const CACHE_NAME = 'SightingsAppV1'; // update the name to get the sw to recache if resources have been updated
 
 
 // Use the install event to pre-cache all initial resources.
@@ -11,7 +11,7 @@ self.addEventListener('install', event => {
         try {
             const cache = await caches.open(CACHE_NAME);
             cache.addAll([
-                '/',
+                '/views/index.html',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -51,8 +51,11 @@ self.addEventListener('fetch', function(event) {
 
     console.log("Url", event.request.url);
 
-    event.respondWith(
-        caches.match(event.request).then(function(response) {
+    // console.log(event.request.mode)
+    // console.log(event.request.method)
+
+    event.respondWith(caches.match(event.request)
+        .then(function (response) {
             return response || fetch(event.request);
         })
     );
