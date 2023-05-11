@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SightingsAppV1'; // update the name to get the sw to recache if resources have been updated
+const CACHE_NAME = 'SightingsAppV2'; // update the name to get the sw to recache if resources have been updated
 
 
 // Use the install event to pre-cache all initial resources.
@@ -12,6 +12,7 @@ self.addEventListener('install', event => {
             const cache = await caches.open(CACHE_NAME);
             cache.addAll([
                 '/views/index.html',
+                '/views/list.html',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -34,6 +35,26 @@ self.addEventListener('activate', event => {
 // Remove old caches
     event.waitUntil(
         (async () => {
+
+            var db;
+            const request =  indexedDB.open('UserInformation');
+            console.log("request db")
+            request.onerror = () => {
+                console.error("Connection Error");
+            };
+
+            request.onupgradeneeded = () => {
+                db = request.result;
+                //creating object
+
+                if(!db.objectStoreNames.contains("users")){
+                    db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
+                    console.log("create store")
+                }
+            }
+
+
+
             const keys = await caches.keys();
             return keys.map(async (cache) => {
                 if(cache !== CACHE_NAME) {
@@ -41,22 +62,94 @@ self.addEventListener('activate', event => {
                     return await caches.delete(cache);
                 }
             })
+
+
+
         })()
     )
+
+    // event.waitUntil(
+    //     (async () => {
+    //
+    //     })
+    // )
+    console.log("activate end")
 })
 
 self.addEventListener('fetch', function(event) {
 
-    console.log('Service Worker: Fetch', event.request.url);
+    // console.log('Service Worker: Fetch', event.request.url);
 
-    console.log("Url", event.request.url);
+    const request = event.request;
+    const url = (new URL(request.url));
+    // console.log(url)
+
+
+
+    if (url.pathname == "/") {
+        console.log(url.pathname)
+        console.log("home")
+    } else if (url.pathname == "/birds") {
+        console.log(url.pathname)
+        console.log("birds list")
+    } else if (url.pathname == "/add") {
+        console.log(url.pathname)
+        console.log("add")
+    } else if (url.pathname == "/bird") {
+        console.log(url.pathname)
+        console.log("bird details")
+    }
+
+    // console.log("Url", event.request.url.pathname);
 
     // console.log(event.request.mode)
     // console.log(event.request.method)
 
+    // if (event.request.mode === 'GET') {
+    //     console.log(event.request.headers)
+    // }
+
+
+
+
+    // if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').includes('/birds'))) {
+    //     event.respondWith(
+    //         fetch(event.request.url).catch(error => {
+    //             // Return the offline page
+    //             return caches.match('/views/list.html');
+    //         })
+    //     );
+    // }
+    // else if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').match('/'))) {
+    //     event.respondWith(
+    //         fetch(event.request.url).catch(error => {
+    //             // Return the offline page
+    //             return caches.match('/views/index.html');
+    //         })
+    //     );
+    // }
+    // else{
+    //     // Respond with everything else if we can
+    //     event.respondWith(caches.match(event.request)
+    //         .then(function (response) {
+    //             return response || fetch(event.request);
+    //         })
+    //     );
+    // }
+
+
+    // Respond with everything else if we can
     event.respondWith(caches.match(event.request)
         .then(function (response) {
             return response || fetch(event.request);
         })
     );
+});
+
+
+self.addEventListener('sync', event => {
+    if (event.tag === 'bird-sync') {
+        console.log("sync time")
+        // event.waitUntil(sendToServer());
+    }
 });
