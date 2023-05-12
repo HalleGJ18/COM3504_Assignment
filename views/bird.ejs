@@ -27,7 +27,8 @@
             <p class="card-text">Date sighted: <%= new Date(birdData.date).toLocaleString() %></p>
             <p class="card-text">Location: <%= birdData.location %></p>
             <p class="card-text">Description: <%= birdData.description %></p>
-            <p class="card-text">Identification: (knowledge graph result here)</p>
+            <p class="card-text">Identification: <%=identification%>)</p>
+            <p class="card-text">Abstract: <%=identification%>)</p>
             <p class="card-text">Added by: <%= birdData.addedBy %></p>
             <!--        <p class="card-text"><small class="text-muted">hello</small></p>-->
         </div>
