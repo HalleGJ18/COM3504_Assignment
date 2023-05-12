@@ -1,4 +1,4 @@
-const CACHE_NAME = 'SightingsAppV2'; // update the name to get the sw to recache if resources have been updated
+const CACHE_NAME = 'SightingsAppV1'; // update the name to get the sw to recache if resources have been updated
 
 
 // Use the install event to pre-cache all initial resources.
@@ -13,6 +13,8 @@ self.addEventListener('install', event => {
             cache.addAll([
                 '/views/index.html',
                 '/views/list.html',
+                '/views/add.html',
+                '/views/bird.html',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -73,32 +75,58 @@ self.addEventListener('activate', event => {
     //
     //     })
     // )
-    console.log("activate end")
+    // console.log("activate end")
 })
 
 self.addEventListener('fetch', function(event) {
 
     // console.log('Service Worker: Fetch', event.request.url);
 
-    const request = event.request;
-    const url = (new URL(request.url));
-    // console.log(url)
+    event.respondWith(
+        fetch(event.request).catch(function() {
+            const url = (new URL(event.request.url));
+            if (url.pathname === "/") {
+                console.log(url.pathname)
+                console.log("home")
+                return caches.match('/views/index.html');
+            } else if (url.pathname === "/birds") {
+                console.log(url.pathname)
+                console.log("birds list")
+                return caches.match('/views/list.html');
+            } else if (url.pathname === "/add") {
+                console.log(url.pathname)
+                console.log("add")
+                return caches.match('/views/add.html');
+            } else if (url.pathname === "/bird") {
+                console.log(url.pathname)
+                console.log("bird details")
+                return caches.match('/views/bird.html');
+            }
+
+            return caches.match(event.request)
+        })
+    )
 
 
-
-    if (url.pathname == "/") {
-        console.log(url.pathname)
-        console.log("home")
-    } else if (url.pathname == "/birds") {
-        console.log(url.pathname)
-        console.log("birds list")
-    } else if (url.pathname == "/add") {
-        console.log(url.pathname)
-        console.log("add")
-    } else if (url.pathname == "/bird") {
-        console.log(url.pathname)
-        console.log("bird details")
-    }
+    // const request = event.request;
+    // const url = (new URL(request.url));
+    // // console.log(url)
+    //
+    //
+    //
+    // if (url.pathname === "/") {
+    //     console.log(url.pathname)
+    //     console.log("home")
+    // } else if (url.pathname === "/birds") {
+    //     console.log(url.pathname)
+    //     console.log("birds list")
+    // } else if (url.pathname === "/add") {
+    //     console.log(url.pathname)
+    //     console.log("add")
+    // } else if (url.pathname === "/bird") {
+    //     console.log(url.pathname)
+    //     console.log("bird details")
+    // }
 
     // console.log("Url", event.request.url.pathname);
 
@@ -139,11 +167,11 @@ self.addEventListener('fetch', function(event) {
 
 
     // Respond with everything else if we can
-    event.respondWith(caches.match(event.request)
-        .then(function (response) {
-            return response || fetch(event.request);
-        })
-    );
+    // event.respondWith(caches.match(event.request)
+    //     .then(function (response) {
+    //         return response || fetch(event.request);
+    //     })
+    // );
 });
 
 
