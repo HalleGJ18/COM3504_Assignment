@@ -25,16 +25,16 @@ var upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'My Form' });
+  res.render('index', { title: 'Bird Sightings Logger' });
 });
 
 
 router.get('/index', function(req, res, next) {
-  res.render('index', { title: 'My Form' });
+  res.render('index', { title: 'Bird Sightings Logger' });
 });
 
 router.get('/add', function(req, res, next) {
-  res.render('add', { title: 'Add a new Sighting to the DB' });
+  res.render('add', { title: 'Add a new Sighting' });
 });
 
 router.post('/add',upload.single('myImg'), function(req, res) {
@@ -51,6 +51,7 @@ router.get('/birds', function(req, res, next) {
       result.detailedLink = "/bird?id=" + result.id
     }
     //console.log(results);
+    console.log(typeof sightingsList)
     res.render('list', {
       title: 'All sightings',
       data: sightingsList}
@@ -67,7 +68,7 @@ router.get('/bird', function(req, res, next) {
     results[0].img = results[0].img.slice(7)
 
     res.render('bird', {
-      title: 'One birdo',
+      title: 'Sighting Details',
       birdData: results[0],
       historyMessages:results[0].chatMessages}
     );

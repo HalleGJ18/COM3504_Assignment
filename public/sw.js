@@ -15,6 +15,8 @@ self.addEventListener('install', event => {
                 '/views/list.html',
                 '/views/add.html',
                 '/views/bird.html',
+                '/javascripts/generateOfflineTable.js',
+                '/javascripts/getData.js',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -38,6 +40,7 @@ self.addEventListener('activate', event => {
     event.waitUntil(
         (async () => {
 
+            // init db
             var db;
             const request =  indexedDB.open('UserInformation');
             console.log("request db")
@@ -50,7 +53,12 @@ self.addEventListener('activate', event => {
                 //creating object
 
                 if(!db.objectStoreNames.contains("users")){
-                    db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
+                    const userObjStore = db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
+                    console.log("create store")
+                }
+
+                if(!db.objectStoreNames.contains("prevBirds")){
+                    const prevBirdObjStore = db.createObjectStore("prevBirds", { keyPath: "_id", autoIncrement: false});
                     console.log("create store")
                 }
             }
@@ -70,13 +78,7 @@ self.addEventListener('activate', event => {
         })()
     )
 
-    // event.waitUntil(
-    //     (async () => {
-    //
-    //     })
-    // )
-    // console.log("activate end")
-})
+});
 
 self.addEventListener('fetch', function(event) {
 
@@ -102,76 +104,9 @@ self.addEventListener('fetch', function(event) {
                 console.log("bird details")
                 return caches.match('/views/bird.html');
             }
-
             return caches.match(event.request)
         })
     )
-
-
-    // const request = event.request;
-    // const url = (new URL(request.url));
-    // // console.log(url)
-    //
-    //
-    //
-    // if (url.pathname === "/") {
-    //     console.log(url.pathname)
-    //     console.log("home")
-    // } else if (url.pathname === "/birds") {
-    //     console.log(url.pathname)
-    //     console.log("birds list")
-    // } else if (url.pathname === "/add") {
-    //     console.log(url.pathname)
-    //     console.log("add")
-    // } else if (url.pathname === "/bird") {
-    //     console.log(url.pathname)
-    //     console.log("bird details")
-    // }
-
-    // console.log("Url", event.request.url.pathname);
-
-    // console.log(event.request.mode)
-    // console.log(event.request.method)
-
-    // if (event.request.mode === 'GET') {
-    //     console.log(event.request.headers)
-    // }
-
-
-
-
-    // if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').includes('/birds'))) {
-    //     event.respondWith(
-    //         fetch(event.request.url).catch(error => {
-    //             // Return the offline page
-    //             return caches.match('/views/list.html');
-    //         })
-    //     );
-    // }
-    // else if (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').match('/'))) {
-    //     event.respondWith(
-    //         fetch(event.request.url).catch(error => {
-    //             // Return the offline page
-    //             return caches.match('/views/index.html');
-    //         })
-    //     );
-    // }
-    // else{
-    //     // Respond with everything else if we can
-    //     event.respondWith(caches.match(event.request)
-    //         .then(function (response) {
-    //             return response || fetch(event.request);
-    //         })
-    //     );
-    // }
-
-
-    // Respond with everything else if we can
-    // event.respondWith(caches.match(event.request)
-    //     .then(function (response) {
-    //         return response || fetch(event.request);
-    //     })
-    // );
 });
 
 
