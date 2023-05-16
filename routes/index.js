@@ -85,6 +85,8 @@ router.get('/bird', function(req, res, next) {
             title: 'One birdo',
             birdData: results[0],
             identification: bindings[0].name.value,
+            abstract: bindings[0].abstract.value,
+            URI: bindings[0].bird.value,
             historyMessages:results[0].chatMessages}
           );
 
