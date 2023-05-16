@@ -43,9 +43,7 @@
             </div>
 
             <div>
-                <label for='addedBy'>Added By</label>
-                <input type="text" name="addedBy" id="addedBy" placeholder="Added by User" class="form-control">
-                
+                <input type="hidden" name="addedBy" id="addedBy"  class="form-control">
             </div>
 
 
@@ -60,69 +58,139 @@
 </div>
 
 <script>
-    const addSighting = document.querySelector('#addSightingForm');
-    addSighting.addEventListener('submit', addSightingFunc);
-
-    var db;
-
-    //opening the db
-    const request = indexedDB.open('BirdInformation');
-
-    request.onerror = () =>
+   getValueFromObjectStore('UserInformation', 'users', 1).then(value =>
     {
-        console.error("Connection Error");
-    };
+        console.log('Retrieved value:', value['username']);
+        document.getElementById('addedBy').value = value['username'];
 
-    request.onupgradeneeded = () =>
-    {
-        //creating object
-        db = request.result;
-
-        if(!db.objectStoreNames.contains("birds"))
-        {
-            const objectStore = db.createObjectStore("birds", { keyPath: "id", autoIncrement: true});
-            objectStore.createIndex('name','name', {unique:false});
-            objectStore.createIndex('date','date', {unique:false});
-            objectStore.createIndex('location','location', {unique:false});
-            objectStore.createIndex('description','description', {unique:false});
-            objectStore.createIndex('addedBy','addedBy', {unique:false});
-
-        }
-    };
-
-
-
-    //function to store the data from the form to indexedDb
-    function addSightingFunc(event)
-    {
-        event.preventDefault();
-        let bname = document.querySelector('#name').value;
-        let dateInfo = document.querySelector('#date').value;
-        let locationInfo = document.querySelector('#location').value;
-        let bdescription = document.querySelector('#description').value;
-        let addedByUser = document.querySelector('#addedBy').value;
-        const img = document.querySelector('#myImage').files[0];
-
-
-        console.log(bname);
+        const addSighting = document.querySelector('#addSightingForm');
+        addSighting.addEventListener('submit', addSightingFunc);
 
         var db;
+
+        //opening the db
         const request = indexedDB.open('BirdInformation');
 
-
-        request.onsuccess = () =>
+        request.onerror = () =>
         {
-            db = request.result;
-            console.log("success");
-
-            const t = db.transaction(["birds"],'readwrite').objectStore("birds");
-
-            //adding data into indexedDb with name BirdInformation
-            t.add({image: img, bname, dateInfo, locationInfo, bdescription, addedByUser});
-
+            console.error("Connection Error");
         };
 
-    };
+        request.onupgradeneeded = () =>
+        {
+            //creating object
+            db = request.result;
+
+            if(!db.objectStoreNames.contains("birds"))
+            {
+                const objectStore = db.createObjectStore("birds", { keyPath: "id", autoIncrement: true});
+                objectStore.createIndex('name','name', {unique:false});
+                objectStore.createIndex('date','date', {unique:false});
+                objectStore.createIndex('location','location', {unique:false});
+                objectStore.createIndex('description','description', {unique:false});
+
+            }
+        };
+
+
+
+        //function to store the data from the form to indexedDb
+            function addSightingFunc(event)
+            {
+                event.preventDefault();
+                let bird_name = document.querySelector('#name').value;
+                let date = document.querySelector('#date').value;
+                let location = document.querySelector('#location').value;
+                let description = document.querySelector('#description').value;
+                let addedBy = value['username'];
+                const img = document.querySelector('#myImage').files[0];
+
+
+
+
+                var db;
+                const request = indexedDB.open('BirdInformation');
+
+
+                request.onsuccess = () =>
+                {
+                    db = request.result;
+                    console.log("success");
+
+                    const t = db.transaction(["birds"],'readwrite').objectStore("birds");
+
+                //adding data into indexedDb with name BirdInformation
+                    t.add({image: img, bird_name, date, location, description, addedBy});
+
+                };
+
+            };
+
+    });
+
+
+    function getValueFromObjectStore(dbName, storeName,key) {
+
+        return new Promise((resolve, reject) =>
+        {
+            // Open the database
+            const request = indexedDB.open(dbName);
+
+
+            request.onerror = () => {
+                reject(new Error('Failed to open database'));
+            };
+
+            request.onsuccess = () =>
+            {
+                const db = request.result;
+
+                // Start a transaction and retrieve the object store
+                const transaction = db.transaction(storeName, 'readonly');
+                const objectStore = transaction.objectStore(storeName);
+
+                const countRequest = objectStore.count();
+                countRequest.onsuccess = () =>
+                {
+                    console.log(countRequest.result);
+                    const getRequest = objectStore.get(countRequest.result);
+
+                    getRequest.onerror = () =>
+                    {
+                        reject(new Error('Failed to retrieve value from object store'));
+                    };
+
+                    getRequest.onsuccess = () =>
+                    {
+                        const value = getRequest.result;
+
+                        if (value) {
+                            resolve(value);
+                        } else {
+                            reject(new Error('Value not found in object store'));
+                        }
+
+                    };
+
+                };
+
+
+            }
+
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+
+    
 
 </script>
 
