@@ -38,35 +38,22 @@
 <script>
     if('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js', { scope: '/' });
+
+        navigator.serviceWorker.ready.then(registration => {
+            if (registration.sync) {
+                // Background Sync is supported.
+                console.log("background sync ready")
+            } else {
+                // Background Sync isn't supported.
+                console.log("background sync not ready")
+            }
+        });
     }
 </script>
 
 <script>
 
     let userform = document.getElementById('login');
-
-    var db;
-
-    const request = indexedDB.open('UserInformation');
-
-
-    request.onerror = () => {
-        console.error("Connection Error");
-    };
-
-
-
-    request.onupgradeneeded = () => {
-        db = request.result;
-        //creating object
-
-        if(!db.objectStoreNames.contains("users")){
-            db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
-        }
-    }
-
-
-
 
     function loginUsers() {
         let uname = document.getElementById('name').value;

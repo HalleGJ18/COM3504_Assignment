@@ -12,6 +12,11 @@ self.addEventListener('install', event => {
             const cache = await caches.open(CACHE_NAME);
             cache.addAll([
                 '/views/index.html',
+                '/views/list.html',
+                '/views/add.html',
+                '/views/bird.html',
+                '/javascripts/generateOfflineTable.js',
+                '/javascripts/getData.js',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -34,6 +39,32 @@ self.addEventListener('activate', event => {
 // Remove old caches
     event.waitUntil(
         (async () => {
+
+            // init db
+            var db;
+            const request =  indexedDB.open('UserInformation');
+            console.log("request db")
+            request.onerror = () => {
+                console.error("Connection Error");
+            };
+
+            request.onupgradeneeded = () => {
+                db = request.result;
+                //creating object
+
+                if(!db.objectStoreNames.contains("users")){
+                    const userObjStore = db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
+                    console.log("create store")
+                }
+
+                if(!db.objectStoreNames.contains("prevBirds")){
+                    const prevBirdObjStore = db.createObjectStore("prevBirds", { keyPath: "_id", autoIncrement: false});
+                    console.log("create store")
+                }
+            }
+
+
+
             const keys = await caches.keys();
             return keys.map(async (cache) => {
                 if(cache !== CACHE_NAME) {
@@ -41,22 +72,47 @@ self.addEventListener('activate', event => {
                     return await caches.delete(cache);
                 }
             })
+
+
+
         })()
     )
-})
+
+});
 
 self.addEventListener('fetch', function(event) {
 
-    console.log('Service Worker: Fetch', event.request.url);
+    // console.log('Service Worker: Fetch', event.request.url);
 
-    console.log("Url", event.request.url);
-
-    // console.log(event.request.mode)
-    // console.log(event.request.method)
-
-    event.respondWith(caches.match(event.request)
-        .then(function (response) {
-            return response || fetch(event.request);
+    event.respondWith(
+        fetch(event.request).catch(function() {
+            const url = (new URL(event.request.url));
+            if (url.pathname === "/") {
+                console.log(url.pathname)
+                console.log("home")
+                return caches.match('/views/index.html');
+            } else if (url.pathname === "/birds") {
+                console.log(url.pathname)
+                console.log("birds list")
+                return caches.match('/views/list.html');
+            } else if (url.pathname === "/add") {
+                console.log(url.pathname)
+                console.log("add")
+                return caches.match('/views/add.html');
+            } else if (url.pathname === "/bird") {
+                console.log(url.pathname)
+                console.log("bird details")
+                return caches.match('/views/bird.html');
+            }
+            return caches.match(event.request)
         })
-    );
+    )
+});
+
+
+self.addEventListener('sync', event => {
+    if (event.tag === 'bird-sync') {
+        console.log("sync time")
+        // event.waitUntil(sendToServer());
+    }
 });
