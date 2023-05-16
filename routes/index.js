@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var bodyParser= require("body-parser");
 var sighting = require('../controllers/sightings');
-//var sightingList = require('../controllers/sightingsList');
-var getData = require('../controllers/sightingsList');
 var Sighting = require('../models/sightings');
 var multer = require('multer');
 
@@ -22,35 +19,40 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage });
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'My Form' });
 });
 
-
+/* GET home page through /index. */
 router.get('/index', function(req, res, next) {
   res.render('index', { title: 'My Form' });
 });
 
+/* GET add bird form. */
 router.get('/add', function(req, res, next) {
   res.render('add', { title: 'Add a new Sighting to the DB' });
 });
 
+/* POST add bird form
+ * Forwards the bird creation to the Sighting controller
+*/
 router.post('/add',upload.single('myImg'), function(req, res) {
   sighting.create(req,res);
 });
 
+/* GET birds list
+* Loads in all the birds from MongoDB, then passes the data to the view.
+*/
 router.get('/birds', function(req, res, next) {
   var sightingsList = [];
-  Sighting.find({}, function(err, results) {
+  Sighting.find({}, function(err, birds) {
     if (err) return next(err);
-    for(let result of results) {
-      sightingsList.push(result)
-      result.img = result.img.slice(7)
-      result.detailedLink = "/bird?id=" + result.id
+    for(let bird of birds) {
+      sightingsList.push(bird)
+      bird.img = bird.img.slice(7)
+      bird.detailedLink = "/bird?id=" + bird.id
     }
-    //console.log(results);
     res.render('list', {
       title: 'All sightings',
       data: sightingsList}
@@ -61,30 +63,35 @@ router.get('/birds', function(req, res, next) {
 
 });
 
+/* GET a single bird's details
+* Loads in the bird's details from MongoDB based on its ID, then passes the data to the view.
+*/
 router.get('/bird', function(req, res, next) {
-
-  Sighting.find({_id: req.query.id}, function(err, results) {
+  Sighting.find({_id: req.query.id}, function(err, bird) {
     if (err) return next(err);
-    console.log(results);
-    console.log(results[0].img);
-    results[0].img = results[0].img.slice(7)
+
+    bird[0].img = bird[0].img.slice(7)
 
     res.render('bird', {
       title: 'One birdo',
-      birdData: results[0],
-      historyMessages:results[0].chatMessages}
+      birdData: bird[0],
+      historyMessages:bird[0].chatMessages}
     );
   });
 });
 
+/* POST /bird (chat messages)
+* Add the chat message to the frontend
+*/
 router.post('/bird', (req, res) => {
   const { birdId, chatMessage, username } = req.body;
 
   Sighting.findById(birdId, (err, sighting) => {
     if (err) {
       console.error(err);
-      res.status(500).send('Error updating user');
-    } else {
+      res.status(500).send('Error updating bird');
+    }
+    else {
       sighting.chatMessages.push({
         chatMessage: chatMessage,
         username: username
@@ -93,7 +100,8 @@ router.post('/bird', (req, res) => {
         if (err) {
           console.error(err);
           res.status(500).send('Error updating bird');
-        } else {
+        }
+        else {
           res.send(savedSighting);
         }
       });
@@ -101,6 +109,19 @@ router.post('/bird', (req, res) => {
   });
 });
 
-""
+/* GET edit bird form. */
+router.get('/edit', function(req, res, next) {
+  Sighting.find({_id: req.query.id}, function(err, bird) {
+    if (err) return next(err);
+
+    bird[0].img = bird[0].img.slice(7)
+
+    res.render('edit', {
+      title: 'One birdo',
+      birdData: bird[0],
+      }
+    );
+  });
+});
 
 module.exports = router;

@@ -1,40 +1,9 @@
-function sendAjaxQuery(url, data) {
+/**
+ * Main Javascript file
+ * Contains methods that support the chat room and getting the user's current location and
+ */
 
-    $.ajax({
-        url: url ,
-        data: data,
-        dataType: 'json',
-        type: 'POST',
-        success: function (dataR) {
-            // no need to JSON parse the result, as we are using
-            // dataType:json, so JQuery knows it and unpacks the
-            // object for us before returning it
-            var ret = dataR;
-            // in order to have the object printed by alert
-            // we need to JSON stringify the object
-            document.getElementById('results').innerHTML= JSON.stringify(ret);
-        },
-        error: function (xhr, status, error) {
-
-            alert('Error: ' + error.message);
-        }
-    });
-}
-
-function onSubmit() {
-    var formArray= $("form").serializeArray();
-    var data={};
-    for (index in formArray){
-        data[formArray[index].name]= formArray[index].value;
-    }
-    console.log(data);
-    // const data = JSON.stringify($(this).serializeArray());
-    sendAjaxQuery('/index', data);
-    event.preventDefault();
-}
-
-
-//socketio stuff:
+//socketio variables:
 let name = null;
 let roomNo = null;
 let socket = io();
@@ -42,31 +11,23 @@ let socket = io();
 
 /**
  * called by <body onload>
- * it initialises the interface and the expected socket messages
+ * it connects the user to the room & displays any messages from the chat history
  * plus the associated actions
+ *
+ * @param birdId: The ID of the bird the chat belongs to.
+ * @param historyMessages: an array containing JS objects that represent a chat message. Can be empty.
  */
 function init(birdId, historyMessages) {
-    // it sets up the interface so that userId and room are selected
-
     connectToRoom(birdId);
 
+    //if there are any history messages, loop through them and write them in the chat.
     if(historyMessages.length > 0) {
-        console.log("write on history yee")
         for(let historyMessage of historyMessages) {
             writeOnHistory('<b>' + historyMessage.username + ':</b> ' + historyMessage.chatMessage);
         }
     }
 
-    // called when someone joins the room. If it is someone else it notifies the joining of the room
-    socket.on('joined', function (room, userId) {
-        if (userId === name) {
-            // it enters the chat
-            //document.getElementById('who_you_are').innerHTML= userId;
-            document.getElementById('in_room').innerHTML= ' '+room;
-
-        }
-    });
-    // called when a message is received
+    // called when a message is sent
     socket.on('chat', function (room, userId, chatText) {
         let who = userId
         if (userId === name) who = 'Me';
@@ -86,58 +47,15 @@ function sendChatText() {
 }
 
 /**
- * used to connect to a room. It gets the user name and room number from the
+ * used to connect to a room.  Gets the current username of the user and displays it in the chat.
+ * Also configures the room Number to be the bird's id, thus making each room a unique number.
  * interface
+ *
+ * @param birdId: the id of the bird which the chat corresponds to.
  */
 function connectToRoom(birdId) {
-
-    function getValueFromObjectStore(dbName, storeName, key) {
-        return new Promise((resolve, reject) => {
-            // Open the database
-            const request = indexedDB.open(dbName);
-
-            request.onerror = () => {
-                reject(new Error('Failed to open database'));
-            };
-
-            request.onsuccess = () => {
-                const db = request.result;
-
-                // Start a transaction and retrieve the object store
-                const transaction = db.transaction(storeName, 'readonly');
-                const objectStore = transaction.objectStore(storeName);
-
-                const countRequest = objectStore.count();
-                countRequest.onsuccess = () => {
-                    console.log(countRequest.result);
-                    const getRequest = objectStore.get(countRequest.result);
-
-                    getRequest.onerror = () => {
-                        reject(new Error('Failed to retrieve value from object store'));
-                    };
-
-                    getRequest.onsuccess = () => {
-                        const value = getRequest.result;
-
-                        if (value) {
-                            resolve(value);
-                        } else {
-                            reject(new Error('Value not found in object store'));
-                        }
-                    };
-                };
-            };
-
-            request.onupgradeneeded = () => {
-                reject(new Error('Database upgrade needed'));
-            };
-        });
-    }
-
     getValueFromObjectStore('UserInformation', 'users', 1)
         .then(value => {
-            console.log('Retrieved value:', value['username']);
-            console.log("ayaayayayaa")
             name = value['username']
             document.getElementById('who_you_are').innerHTML= name;
             document.getElementById('addedBy').value = value['username'];
@@ -147,19 +65,13 @@ function connectToRoom(birdId) {
             console.error('Error retrieving value:', error);
         });
 
-
-
-
-    roomNo = birdId; //this will be the id of the sighting
-    //name = Math.round(Math.random() * 10000); //this will be the name the user gives on login
-    //if (!name) name = 'Unknown-' + Math.random();
+    roomNo = birdId;
     socket.emit('create or join', roomNo, name);
-
 }
 
 /**
  * it appends the given html text to the history div
- * @param text: teh text to append
+ * @param text: the text to append
  */
 function writeOnHistory(text) {
     let history = document.getElementById('history');
@@ -169,7 +81,15 @@ function writeOnHistory(text) {
     document.getElementById('chat_input').value = '';
 }
 
+/**
+ * It adds a message to the chat
+ * @param birdId - the ID of the bird
+ * @param  - the message to be added
+ * @param username - the username who sent the message
+ */
 function addChatMessage(birdId,chatMessage, username) {
+
+    //using POST request to get all the bird information as JSON, then parsing it
     fetch('/bird', {
         method: 'POST',
         headers: {
@@ -191,15 +111,25 @@ function addChatMessage(birdId,chatMessage, username) {
         });
 }
 
+/**
+ * Gets the curent geolocation of the user
+ * After getting permission to get the user's coordinates, the coordinates are sent to an API
+ * that returns a city.
+ * Note: There is a known bug with the location API. Occasionally, an HTTPS request is sent instead of HTTP,
+ * which leads to no results. In that instance, the user is alerted.
+ */
 function getLocation() {
+
+    //if permission has been given - get the current position.
+    //Then, pass it to the API to get a city.
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            console.log("Latitude: " + position.coords.latitude +
-                "\nLongitude: " + position.coords.longitude);
 
             var query = 'http://api.positionstack.com/v1/reverse?access_key=359ea6dd8c8570c7df19d440a9de2234&query=' +
                 position.coords.latitude + "," +
                 position.coords.longitude
+
+
             fetch(query)
                 .then(response => response.json())
                 .then(data => {
@@ -207,6 +137,11 @@ function getLocation() {
 
                 })
                 .catch(error => {
+
+                    //if the API forces HTTPS, a TypeError is returned. Let the user know that.
+                    if(error == "TypeError: Cannot read properties of undefined (reading '0')") {
+                        alert("The API is currently unable to get your location.");
+                    }
                     console.log(error);
                 });
 
@@ -214,4 +149,53 @@ function getLocation() {
     } else {
         console.log("Geolocation is not supported by this browser.");
     }
+}
+
+/**
+ * Get the username from indexedDB
+ * @param dbName - the name of the database
+ * @param storeName - the name of the story
+ * @param key - the key
+ */
+function getValueFromObjectStore(dbName, storeName, key) {
+    return new Promise((resolve, reject) => {
+        // Open the database
+        const request = indexedDB.open(dbName);
+
+        request.onerror = () => {
+            reject(new Error('Failed to open database'));
+        };
+
+        request.onsuccess = () => {
+            const db = request.result;
+
+            // Start a transaction and retrieve the object store
+            const transaction = db.transaction(storeName, 'readonly');
+            const objectStore = transaction.objectStore(storeName);
+
+            const countRequest = objectStore.count();
+            countRequest.onsuccess = () => {
+                console.log(countRequest.result);
+                const getRequest = objectStore.get(countRequest.result);
+
+                getRequest.onerror = () => {
+                    reject(new Error('Failed to retrieve value from object store'));
+                };
+
+                getRequest.onsuccess = () => {
+                    const value = getRequest.result;
+
+                    if (value) {
+                        resolve(value);
+                    } else {
+                        reject(new Error('Value not found in object store'));
+                    }
+                };
+            };
+        };
+
+        request.onupgradeneeded = () => {
+            reject(new Error('Database upgrade needed'));
+        };
+    });
 }
