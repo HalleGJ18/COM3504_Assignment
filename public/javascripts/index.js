@@ -17,7 +17,12 @@ let socket = io();
  * @param birdId: The ID of the bird the chat belongs to.
  * @param historyMessages: an array containing JS objects that represent a chat message. Can be empty.
  */
-function init(birdId, historyMessages) {
+function init(birdId, historyMessages, addedByName) {
+
+    //check if the edit button should be made visible
+    canEdit(addedByName);
+
+    //connect to the room with the id of the bird
     connectToRoom(birdId);
 
     //if there are any history messages, loop through them and write them in the chat.
@@ -33,7 +38,6 @@ function init(birdId, historyMessages) {
         if (userId === name) who = 'Me';
         writeOnHistory('<b>' + who + ':</b> ' + chatText);
     });
-
 }
 
 /**
@@ -58,7 +62,6 @@ function connectToRoom(birdId) {
         .then(value => {
             name = value['username']
             document.getElementById('who_you_are').innerHTML= name;
-            document.getElementById('addedBy').value = value['username'];
 
         })
         .catch(error => {
@@ -76,6 +79,7 @@ function connectToRoom(birdId) {
 function writeOnHistory(text) {
     let history = document.getElementById('history');
     let paragraph = document.createElement('p');
+
     paragraph.innerHTML = text;
     history.appendChild(paragraph);
     document.getElementById('chat_input').value = '';
@@ -95,11 +99,13 @@ function addChatMessage(birdId,chatMessage, username) {
         headers: {
             'Content-Type': 'application/json'
         },
+
         body: JSON.stringify({
             birdId: birdId,
             chatMessage: chatMessage,
             username: username
         })
+
     })
         .then(response => response.json())
         .then(data => {
@@ -129,7 +135,6 @@ function getLocation() {
                 position.coords.latitude + "," +
                 position.coords.longitude
 
-
             fetch(query)
                 .then(response => response.json())
                 .then(data => {
@@ -142,6 +147,7 @@ function getLocation() {
                     if(error == "TypeError: Cannot read properties of undefined (reading '0')") {
                         alert("The API is currently unable to get your location.");
                     }
+
                     console.log(error);
                 });
 
@@ -193,9 +199,29 @@ function getValueFromObjectStore(dbName, storeName, key) {
                 };
             };
         };
-
         request.onupgradeneeded = () => {
             reject(new Error('Database upgrade needed'));
         };
     });
+}
+
+/**
+ * Compare who the document was added by and who the current user is
+ * If the two match- Make the edit button visible
+ * @param addedBy - Who the sighting was added by
+ */
+function canEdit(addedBy) {
+    getValueFromObjectStore('UserInformation', 'users', 1)
+        .then(value => {
+            name = value['username']
+            document.getElementById('who_you_are').innerHTML= name;
+
+            if(addedBy == value['username']) {
+                document.getElementById("EditButton").style.display = "block";
+            }
+
+        })
+        .catch(error => {
+            console.error('Error retrieving value:', error);
+        });
 }

@@ -12,6 +12,7 @@ var storage = multer.diskStorage({
   filename: function (req, file, cb) {
     var original = file.originalname;
     var file_extension = original.split(".");
+
     // Make the file name the date + the file extension
     filename =  Date.now() + '.' + file_extension[file_extension.length-1];
     cb(null, filename);
@@ -46,6 +47,7 @@ router.post('/add',upload.single('myImg'), function(req, res) {
 */
 router.get('/birds', function(req, res, next) {
   var sightingsList = [];
+
   Sighting.find({}, function(err, birds) {
     if (err) return next(err);
     for(let bird of birds) {
@@ -53,13 +55,12 @@ router.get('/birds', function(req, res, next) {
       bird.img = bird.img.slice(7)
       bird.detailedLink = "/bird?id=" + bird.id
     }
+
     res.render('list', {
       title: 'All sightings',
       data: sightingsList}
     );
   });
-
-
 
 });
 
@@ -77,6 +78,7 @@ router.get('/bird', function(req, res, next) {
       birdData: bird[0],
       historyMessages:bird[0].chatMessages}
     );
+
   });
 });
 
@@ -96,6 +98,7 @@ router.post('/bird', (req, res) => {
         chatMessage: chatMessage,
         username: username
       });
+
       sighting.save((err, savedSighting) => {
         if (err) {
           console.error(err);
@@ -105,6 +108,7 @@ router.post('/bird', (req, res) => {
           res.send(savedSighting);
         }
       });
+
     }
   });
 });
@@ -119,9 +123,31 @@ router.get('/edit', function(req, res, next) {
     res.render('edit', {
       title: 'One birdo',
       birdData: bird[0],
-      }
-    );
+      });
   });
+});
+
+/* POST update bird form
+ * Update the bird sighting
+*/
+router.post('/edit', function(req, res) {
+  let birdId = req.query.id
+  let bird_name = req.body.birdname;
+  let date = req.body.date;
+  let location = req.body.location;
+  let description = req.body.description;
+
+  //update the sighting
+  Sighting.updateOne({ _id: birdId }, { $set: { bird_name: bird_name, date:date, location:location,
+      description: description} })
+      .then(() => {
+        console.log('Sighting updated successfully');
+        alert("Sighting updated successfully");
+      })
+      .catch((error) => {
+        console.log('Error updating sighting:', error);
+
+      });
 });
 
 module.exports = router;

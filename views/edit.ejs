@@ -16,7 +16,7 @@
 <div class="card mb-3 w-75 mx-auto">
     <div class="card-body">
         <h3 class="card-title">Edit sighting</h3>
-        <form id=“xForm" enctype="multipart/form-data" method="post" action="/add">
+        <form id=“xForm" method="post" action="/edit?id=<%= birdData.id %>">
             <div class="form-group">
                 <label for='birdname'>Bird name:</label>
                 <input type="text" name="birdname" id="birdname" value="<%= birdData.bird_name %>" class="form-control">
@@ -42,7 +42,7 @@
                 <label for="myImage">Choose an image</label>
 
                 <div>
-                    <input type="file" id="myImage" name="myImg" accept="image/*" required class="form-control">
+                    <input type="file" id="myImage" name="myImg" accept="image/*" class="form-control">
                 </div>
             </div>
 
