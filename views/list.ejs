@@ -70,6 +70,128 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <script>
+    // store entries in indexed db
+    function getValueFromObjectStore(dbName, storeName, key) {
+        return new Promise((resolve, reject) => {
+            // Open the database
+            const request = indexedDB.open(dbName);
+
+            request.onerror = () => {
+                reject(new Error('Failed to open database'));
+            };
+
+            request.onsuccess = () => {
+                const db = request.result;
+
+                // Start a transaction and retrieve the object store
+                const transaction = db.transaction(storeName, 'readonly');
+                const objectStore = transaction.objectStore(storeName);
+
+                const countRequest = objectStore.count();
+                countRequest.onsuccess = () => {
+                    console.log(countRequest.result);
+                    const getRequest = objectStore.get(countRequest.result);
+
+                    getRequest.onerror = () => {
+                        reject(new Error('Failed to retrieve value from object store'));
+                    };
+
+                    getRequest.onsuccess = () => {
+                        const value = getRequest.result;
+
+                        if (value) {
+                            resolve(value);
+                        } else {
+                            reject(new Error('Value not found in object store'));
+                        }
+                    };
+                };
+            };
+
+            request.onupgradeneeded = () => {
+                reject(new Error('Database upgrade needed'));
+            };
+        });
+    }
+
+    // get current user
+    let currentUser;
+    console.log("current user: ", currentUser)
+
+    getValueFromObjectStore('UserInformation', 'users', 1)
+        .then(value => {
+            // console.log('Retrieved value:', value['username']);
+            currentUser = value['username']
+            // document.getElementById('addedBy').value = value['username'];
+
+            // store all sightings created by current user if not ""
+            console.log("current user: ", currentUser);
+
+            <!--console.log(<%-JSON.stringify(data)%>)-->
+
+            const asArray = Object.entries(<%-JSON.stringify(data)%>);
+
+
+            const filtered = asArray.filter( function (item) {
+                // console.log(item[1])
+                return item[1].addedBy === currentUser
+
+            });
+            // console.log(filtered)
+
+            const userBirds = Object.fromEntries(filtered);
+            console.log(userBirds)
+            console.log("yes")
+
+
+            // upload to indexeddb
+            var db;
+            const request = indexedDB.open('UserInformation');
+
+            request.onsuccess = () => {
+                db = request.result;
+                console.log("success");
+
+                const t = db.transaction(["prevBirds"],'readwrite').objectStore("prevBirds");
+
+                // clear db
+                const clearStoreReq = t.clear()
+                clearStoreReq.onsuccess = (event) => {
+                    console.log("cleared")
+                }
+
+                // add sightings
+
+                // filtered.forEach(t.add)
+                // t.add(userBirds)
+                for (const bird in userBirds) {
+                    console.log("bird: ",userBirds[bird])
+
+                    let b = {
+                        id : bird,
+                        sighting : userBirds[bird]
+                    }
+                    // t.add(b)
+                    console.log(userBirds[bird])
+                    t.add(userBirds[bird])
+                }
+
+
+            };
+
+
+
+
+        })
+        .catch(error => {
+            console.error('Error retrieving value:', error);
+            currentUser = "";
+        });
+
+
+</script>
+
+<script>
     const tbody = document.getElementById("sightingsTableData");
 
     // Sort table by given column
@@ -97,5 +219,5 @@
 </script>
 
 </body>
-</script>
+
 </html>

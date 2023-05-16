@@ -22,17 +22,17 @@ var upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'My Form' });
+  res.render('index', { title: 'Bird Sightings Logger' });
 });
 
 /* GET home page through /index. */
 router.get('/index', function(req, res, next) {
-  res.render('index', { title: 'My Form' });
+  res.render('index', { title: 'Bird Sightings Logger' });
 });
 
 /* GET add bird form. */
 router.get('/add', function(req, res, next) {
-  res.render('add', { title: 'Add a new Sighting to the DB' });
+  res.render('add', { title: 'Add a new Sighting' });
 });
 
 /* POST add bird form
@@ -55,7 +55,6 @@ router.get('/birds', function(req, res, next) {
       bird.img = bird.img.slice(7)
       bird.detailedLink = "/bird?id=" + bird.id
     }
-
     res.render('list', {
       title: 'All sightings',
       data: sightingsList}
