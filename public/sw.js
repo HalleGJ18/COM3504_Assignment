@@ -61,9 +61,18 @@ self.addEventListener('activate', event => {
                     const prevBirdObjStore = db.createObjectStore("prevBirds", { keyPath: "_id", autoIncrement: false});
                     console.log("create store")
                 }
+
+                if(!db.objectStoreNames.contains("birds"))
+                {
+                    const objectStore = db.createObjectStore("birds", { keyPath: "id", autoIncrement: true});
+                    // objectStore.createIndex('name','name', {unique:false});
+                    // objectStore.createIndex('date','date', {unique:false});
+                    // objectStore.createIndex('location','location', {unique:false});
+                    // objectStore.createIndex('description','description', {unique:false});
+                    // objectStore.createIndex('addedBy','addedBy', {unique:false});
+
+                }
             }
-
-
 
             const keys = await caches.keys();
             return keys.map(async (cache) => {
