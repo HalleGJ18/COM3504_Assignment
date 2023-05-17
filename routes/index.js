@@ -39,12 +39,15 @@ router.get('/add', function(req, res, next) {
  * Forwards the bird creation to the Sighting controller
 */
 router.post('/add',upload.single('myImg'), function(req, res) {
+  // console.log(req)
   sighting.create(req,res);
 });
 
-/* GET birds list
-* Loads in all the birds from MongoDB, then passes the data to the view.
-*/
+router.post('/sync' ,function (req, res){
+  // console.log("sync route")
+  sighting.sync(req,res);
+});
+
 router.get('/birds', function(req, res, next) {
   var sightingsList = [];
 

@@ -1,3 +1,5 @@
+// import getAllFromObjectStore from "/javascripts/getData.js";
+
 const CACHE_NAME = 'SightingsAppV2'; // update the name to get the sw to recache if resources have been updated
 
 
@@ -17,6 +19,7 @@ self.addEventListener('install', event => {
                 '/views/bird.html',
                 '/javascripts/generateOfflineTable.js',
                 '/javascripts/getData.js',
+                '/javascripts/sync.js',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
                 '/partials/footer.ejs',
@@ -113,6 +116,13 @@ self.addEventListener('fetch', function(event) {
                 console.log("bird details")
                 return caches.match('/views/bird.html');
             }
+            async function requestBackgroundSync() {
+                await self.registration.sync.register('bird-sync');
+            }
+            requestBackgroundSync().then(r => {
+                console.log("register that sync")
+            })
+
             return caches.match(event.request)
         })
     )
@@ -123,5 +133,100 @@ self.addEventListener('sync', event => {
     if (event.tag === 'bird-sync') {
         console.log("sync time")
         // event.waitUntil(sendToServer());
+        event.waitUntil(uploadSightings())
     }
 });
+
+
+
+function uploadSightings() {
+    console.log("upload")
+    // loop through indexeddb
+        // make post request to /add
+    //clear indexeddb
+    getAllFromObjectStore('UserInformation', 'birds')
+        .then(values => {
+            console.log(values);
+            for (let value in values) {
+                // insertRows(values[value], value)
+                // console.log(value)
+                console.log(values[value])
+                // upload sighting
+                sendQuery("/sync", values[value])
+
+            }
+            var db;
+            const request = indexedDB.open('UserInformation');
+            request.onsuccess = () => {
+                db = request.result;
+                console.log("success");
+                const t = db.transaction(["birds"], 'readwrite').objectStore("birds");
+                // clear db
+                const clearStoreReq = t.clear()
+                clearStoreReq.onsuccess = (event) => {
+                    console.log("cleared")
+                }
+            }
+
+        })
+        .catch(error => {
+            console.error('Error retrieving value:', error);
+        });
+}
+
+
+function getAllFromObjectStore(dbName, storeName) {
+    return new Promise((resolve, reject) => {
+        // Open the database
+        const request = indexedDB.open(dbName);
+
+        request.onerror = () => {
+            reject(new Error('Failed to open database'));
+        };
+
+        request.onsuccess = () => {
+            const db = request.result;
+
+            // Start a transaction and retrieve the object store
+            const transaction = db.transaction(storeName, 'readonly');
+            const objectStore = transaction.objectStore(storeName);
+
+            const getRequest = objectStore.getAll();
+
+            getRequest.onerror = () => {
+                reject(new Error('Failed to retrieve value from object store'));
+            };
+
+            getRequest.onsuccess = () => {
+                const value = getRequest.result;
+
+                if (value) {
+                    resolve(value);
+                } else {
+                    reject(new Error('Value not found in object store'));
+                }
+            };
+        };
+
+        request.onupgradeneeded = () => {
+            reject(new Error('Database upgrade needed'));
+        };
+    });
+}
+
+
+function sendQuery(url, data) {
+    fetch('http://localhost:3000/sync', {
+        method: 'POST',
+        body: JSON.stringify({
+            birdname: data['bird_name'],
+            date: data['date'],
+            location: data['location'],
+            description: data['description'],
+            addedBy: data['addedBy']
+        }),
+
+        headers: {'Content-Type': 'application/json'},
+    }).then (res => console.log(res))
+
+}
