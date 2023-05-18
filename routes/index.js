@@ -3,6 +3,7 @@ var router = express.Router();
 var sighting = require('../controllers/sightings');
 var Sighting = require('../models/sightings');
 var multer = require('multer');
+const fs = require('fs');
 
 // storage defines the storage options to be used for file upload with multer
 var storage = multer.diskStorage({
@@ -39,8 +40,16 @@ router.get('/add', function(req, res, next) {
  * Forwards the bird creation to the Sighting controller
 */
 router.post('/add',upload.single('myImg'), function(req, res) {
-  // console.log(req.body)
-  sighting.create(req,res);
+
+  const imageBuffer = fs.readFileSync(req.file.path);
+
+  // Convert the image buffer to base64
+  const base64Data = imageBuffer.toString('base64');
+
+  console.log(base64Data);
+
+  sighting.create(req,res, base64Data);
+
 });
 
 router.post('/sync' ,function (req, res){
@@ -65,6 +74,7 @@ router.get('/birds', function(req, res, next) {
       }
       bird.detailedLink = "/bird?id=" + bird.id
     }
+    console.log(sightingsList)
     res.render('list', {
       title: 'All sightings',
       data: sightingsList}

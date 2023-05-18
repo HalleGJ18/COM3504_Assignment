@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var db = require('../databases/sightings.js')
 
 
-exports.create = function (req, res) {
+exports.create = function (req, res, base64Data) {
     var userData = req.body;
     console.log(userData);
     var sighting = new Sighting({
@@ -18,7 +18,8 @@ exports.create = function (req, res) {
         img: req.file.path,
         identification: userData.identifiedName,
         abstract: userData.abstract,
-        uri: userData.uri
+        uri: userData.uri,
+        imgbase: base64Data
     });
 
     sighting.save(function (err, results) {
