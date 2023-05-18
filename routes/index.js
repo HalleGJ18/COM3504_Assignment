@@ -134,7 +134,13 @@ router.get('/edit', function(req, res, next) {
   Sighting.find({_id: req.query.id}, function(err, bird) {
     if (err) return next(err);
 
-    bird[0].img = bird[0].img.slice(7)
+    try {
+      bird[0].img = bird[0].img.slice(7)
+    }
+    catch (err) {
+      bird[0].img = "none"
+      
+    }
 
     res.render('edit', {
       title: 'One birdo',
