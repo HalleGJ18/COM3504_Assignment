@@ -1,7 +1,7 @@
 
 function insertRows(bird, id) {
+    // generate table row for sightings table
     const tableBody = document.getElementById("sightingsTableData");
-    // console.log(bird._id)
     let link = "/bird?id=" + String(bird._id);
     let rowHtml = "<tr>\n" +
         "            <th scope=\"row\">"+id+"</th>\n" +

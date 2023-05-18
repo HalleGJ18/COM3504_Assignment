@@ -84,9 +84,6 @@
         addSighting.addEventListener('submit', addSightingFunc);
 
 
-
-
-
         //function to store the data from the form to indexedDb
             function addSightingFunc(event)
             {
@@ -97,8 +94,6 @@
                 let description = document.querySelector('#description').value;
                 let addedBy = value['username'];
                 const img = document.querySelector('#myImage').files[0];
-
-
 
 
                 var db;
@@ -116,7 +111,7 @@
                     t.add({image: img, bird_name, date, location, description, addedBy});
 
 
-                    // trigger sync event
+                    // trigger sync event to upload sightings when back online
                     syncSightings();
 
                 };
@@ -166,28 +161,12 @@
                         } else {
                             reject(new Error('Value not found in object store'));
                         }
-
                     };
-
                 };
-
-
             }
-
         });
-
     }
 
-
-
-
-
-
-
-
-
-
-    
 
 </script>
 

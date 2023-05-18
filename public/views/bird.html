@@ -68,8 +68,9 @@
 
 
 <script>
+  // retrieve 
+
   let bird_id = getURLParams();
-  // let d = getEntryFromObjectStore("UserInformation", "prevBirds", bird_id);
 
   getEntryFromObjectStore("UserInformation", "prevBirds", bird_id)
           .then(value => {

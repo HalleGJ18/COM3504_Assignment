@@ -1,7 +1,4 @@
 async function syncSightings() {
-    // const registration = await navigator.serviceWorker.ready;
-    // console.log("register sync")
-    // await registration.sync.register("bird-sync");
     new Promise(function (resolve, reject) {
         Notification.requestPermission(function (result) {
             resolve();
