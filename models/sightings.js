@@ -22,7 +22,9 @@ var SightingSchema = new Schema(
         abstract: {type: String, max:10000},
         uri: {type: String, max:100},
         img: {type: String },
-            chatMessages: [chatMessagesSchema]
+        imgbase: {type:String},
+            chatMessages: [chatMessagesSchema],
+
     }
 );
 

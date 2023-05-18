@@ -50,7 +50,7 @@
                 <th scope="row"><%= i + 1 %></th>
                 <td class="col-md-2 px-0">
                     <div class="container" >
-                        <img src="<%= data[i].img %>" class="img-fluid img-thumbnail">
+                        <img src="data:image/png;base64, <%= data[i].imgbase %>" class="img-fluid img-thumbnail">
                     </div>
                 </td>
                 <td><%= data[i].bird_name %></td>
