@@ -1,5 +1,5 @@
 
-function queryKnowledgeGraph(subject, index) {
+function queryKnowledgeGraph(subject) {
     return new Promise((resolve, reject) => {
         const endpointUrl = 'https://dbpedia.org/sparql';
         const  sparqlQuery= `PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbprop: <http://dbpedia.org/property/> SELECT ?bird ?name ?abstract WHERE { ?bird rdf:type dbo:Bird ; dbprop:name ?name OPTIONAL {?bird dbo:abstract ?abstract . FILTER langMatches(lang(?abstract),"en")} FILTER  regex(?name, "`+subject+`", "i" ) }`;
@@ -26,7 +26,7 @@ function queryKnowledgeGraph(subject, index) {
     })
 }
 
-function insertOption(entry) {
+function insertOption(entry, index) {
     const dropdown = document.getElementById("identification");
     let relevant = entry.name.value + ", "+ entry.bird.value
     console.log("relevant", relevant)
