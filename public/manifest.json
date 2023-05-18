@@ -10,7 +10,7 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "/images/image_icon.png",
+      "src": "/images/bird-icon.png",
       "sizes": "512x512"
     }
   ]

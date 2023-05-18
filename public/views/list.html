@@ -69,6 +69,8 @@
 </div>
 
 <script>
+    // get all sightings that have been downloaded from mongodb
+    // iterate over and add rows to table
     getAllFromObjectStore('UserInformation', 'prevBirds')
         .then(values => {
             console.log(values);
