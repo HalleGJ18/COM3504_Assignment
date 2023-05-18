@@ -19,7 +19,7 @@
         <form id=“xForm" enctype="multipart/form-data" method="post" action="/add">
             <div class="form-group">
                 <label for='birdname'>Bird name:</label>
-                <input type="text" name="birdname" id="birdname" value="Birdo" class="form-control">
+                <input type="text" name="birdname" id="birdname" value="Wood Pigeon" class="form-control">
             </div>
 
             <div class="form-group">
@@ -43,6 +43,29 @@
                 <div>
                     <input type="file" id="myImage" name="myImg" accept="image/*" required class="form-control">
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="identification">Select knowledge graph entry</label>
+
+                <button type="button" id="searchBird" class="btn btn-primary">Find bird</button>
+                <button type="button" id="selectBird" class="btn btn-primary">Select bird</button>
+
+                <select id="identification" name="identification" class="form-control">
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" name="identifiedName" id="identifiedName" value="" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" name="abstract" id="abstract" value="" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" name="uri" id="uri" value="" class="form-control">
             </div>
 
             <div class="form-group">
@@ -117,6 +140,82 @@
 
 </script>
 
+<script src="/javascripts/knowledgeGraph.js"></script>
+
+<script>
+
+    function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
+
+    let searchKnowledge = document.getElementById('searchBird');
+    let knowledge;
+    function populateDropdown() {
+        // console.log("search knowledge graph")
+        let birdName = document.getElementById("birdname").value
+        console.log(birdName)
+        if (birdName) {
+            queryKnowledgeGraph(birdName)
+                .then( knowledge => {
+                    console.log("results")
+                    console.log(knowledge)
+
+                    // clear dropdown
+                    const dropdown = document.getElementById("identification");
+                    removeAllChildNodes(dropdown);
+
+                    // populate dropdown
+                    for (let entry in knowledge) {
+                        insertOption(knowledge[entry], entry)
+                    }
+                })
+        }
+
+    }
+    searchKnowledge.addEventListener('click', populateDropdown);
+
+
+
+    // event listener on submit button to put knowledge graph data in hidden fields
+    // let submitButton = document.getElementById('g');
+    let selectBird = document.getElementById('selectBird')
+
+    function submitKnowledge() {
+        let identity = parseInt(document.getElementById('identification').value)
+        console.log(identity)
+        console.log(typeof identity)
+
+        let birdName = document.getElementById("birdname").value
+        console.log(birdName)
+        if (birdName) {
+            queryKnowledgeGraph(birdName)
+                .then( knowledge => {
+                    console.log("results")
+                    // console.log(knowledge)
+
+                    // get selected
+                    let selected = knowledge[identity]
+                    console.log(selected)
+
+                    // find hidden fields
+
+                    document.getElementById('identifiedName').value = selected.name.value
+                    document.getElementById('abstract').value = selected.abstract.value
+                    document.getElementById('uri').value = selected.bird.value
+
+                    console.log(document.getElementById('identifiedName').value)
+                    console.log(document.getElementById('abstract').value)
+                    console.log(document.getElementById('uri').value)
+                })
+        }
+    }
+
+    selectBird.addEventListener('click', submitKnowledge)
+
+</script>
 
 </body>
 

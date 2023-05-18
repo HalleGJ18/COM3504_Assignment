@@ -3,11 +3,28 @@
 <head>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-   
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="/javascripts/sync.js"></script>
    
 
 </head>
 <body>
+
+<header id="main-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Bird Sightings Logger</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/">Home</a>
+                <a class="nav-item nav-link" href="/birds">View Sightings</a>
+                <a class="nav-item nav-link" href="/add">Add new Sighting</a>
+            </div>
+        </div>
+    </nav>
+</header>
 
 <h1 class="text-center p-2"></h1>
 
@@ -66,31 +83,7 @@
         const addSighting = document.querySelector('#addSightingForm');
         addSighting.addEventListener('submit', addSightingFunc);
 
-        var db;
 
-        //opening the db
-        const request = indexedDB.open('BirdInformation');
-
-        request.onerror = () =>
-        {
-            console.error("Connection Error");
-        };
-
-        request.onupgradeneeded = () =>
-        {
-            //creating object
-            db = request.result;
-
-            if(!db.objectStoreNames.contains("birds"))
-            {
-                const objectStore = db.createObjectStore("birds", { keyPath: "id", autoIncrement: true});
-                objectStore.createIndex('name','name', {unique:false});
-                objectStore.createIndex('date','date', {unique:false});
-                objectStore.createIndex('location','location', {unique:false});
-                objectStore.createIndex('description','description', {unique:false});
-
-            }
-        };
 
 
 
@@ -109,7 +102,7 @@
 
 
                 var db;
-                const request = indexedDB.open('BirdInformation');
+                const request = indexedDB.open('UserInformation');
 
 
                 request.onsuccess = () =>
@@ -119,8 +112,12 @@
 
                     const t = db.transaction(["birds"],'readwrite').objectStore("birds");
 
-                //adding data into indexedDb with name BirdInformation
+                    //adding data into indexedDb with name UserInformation
                     t.add({image: img, bird_name, date, location, description, addedBy});
+
+
+                    // trigger sync event
+                    syncSightings();
 
                 };
 

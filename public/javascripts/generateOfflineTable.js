@@ -14,6 +14,7 @@ function insertRows(bird, id) {
         "            <td>"+new Date(bird.date).toLocaleString()+"</td>\n" +
         "            <td>"+bird.location+"</td>\n" +
         "            <td>"+bird.description+"</td>\n" +
+        "            <td>"+bird.identification+"</td>\n" +
         "            <td>"+bird.addedBy+"</td>\n" +
         "            <td><a href="+ link +" class=\"btn btn-outline-primary stretched-link\">Detailed view</a></td>\n" +
         "        </tr>"

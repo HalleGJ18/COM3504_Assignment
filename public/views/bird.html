@@ -36,11 +36,14 @@
   <div class="card mb-3 w-75 mx-auto">
     <div class="card-body">
       <h2 class="card-title" id="name_field"></h2>
+      <p class="card-text" id="addedby_field">Added by: </p>
       <p class="card-text" id="date_field">Date sighted:</p>
       <p class="card-text" id="location_field">Location: </p>
       <p class="card-text" id="description_field">Description: </p>
       <p class="card-text" id="identification_field">Identification: (knowledge graph result here)</p>
-      <p class="card-text" id="addedby_field">Added by: </p>
+<!--      <p class="card-text" id="uri"></p>-->
+      <a href="" id="uri"></a>
+      <p class="card-text" id="abstract_field">Abstract: </p>
     </div>
   </div>
 </div>
@@ -77,6 +80,12 @@
             document.getElementById('location_field').innerHTML = "Location: "+value['location'];
             document.getElementById('description_field').innerHTML = "Description: "+value['description']
             // identification
+            document.getElementById('identification_field').innerHTML = "Identification: "+value['identification']
+            document.getElementById('uri').innerHTML = value['uri']
+            document.getElementById('uri').href = value['uri']
+            document.getElementById('abstract_field').innerHTML = "Abstract: "+value['abstract']
+
+
             document.getElementById('addedby_field').innerHTML = "Added by: "+value['addedBy'];
             document.getElementById('title_field').innerHTML = "Sighting details for "+value['bird_name']
             document.getElementById('chat_title').innerHTML = "Chat for "+value['bird_name']+":"
