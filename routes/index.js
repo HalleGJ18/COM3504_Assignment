@@ -139,7 +139,7 @@ router.get('/edit', function(req, res, next) {
     }
     catch (err) {
       bird[0].img = "none"
-      
+
     }
 
     res.render('edit', {
@@ -158,10 +158,14 @@ router.post('/edit', function(req, res) {
   let date = req.body.date;
   let location = req.body.location;
   let description = req.body.description;
+  let identification = req.body.identifiedName;
+  let abstract = req.body.abstract;
+  let uri = req.body.uri;
+
 
   //update the sighting
   Sighting.updateOne({ _id: birdId }, { $set: { bird_name: bird_name, date:date, location:location,
-      description: description} })
+      description: description, identification: identification, abstract: abstract, uri: uri} })
       .then(() => {
         console.log('Sighting updated successfully');
         res.redirect("/birds");
