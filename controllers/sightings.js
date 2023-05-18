@@ -8,6 +8,7 @@ var db = require('../databases/sightings.js')
 
 exports.create = function (req, res) {
     var userData = req.body;
+    console.log(userData);
     var sighting = new Sighting({
         bird_name: userData.birdname,
         date: userData.date,

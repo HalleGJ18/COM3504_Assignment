@@ -19,7 +19,7 @@
         <form id=“xForm" enctype="multipart/form-data" method="post" action="/add">
             <div class="form-group">
                 <label for='birdname'>Bird name:</label>
-                <input type="text" name="birdname" id="birdname" value="Birdo" class="form-control">
+                <input type="text" name="birdname" id="birdname" value="Wood Pigeon" class="form-control">
             </div>
 
             <div class="form-group">
@@ -43,6 +43,24 @@
                 <div>
                     <input type="file" id="myImage" name="myImg" accept="image/*" required class="form-control">
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="identification">Select knowledge graph entry</label>
+
+                <button type="button" id="searchBird" class="btn btn-primary">Find bird</button>
+
+                <select id="identification" name="identification" class="form-control">
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" name="abstract" id="abstract" value="" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" name="uri" id="uri" value="" class="form-control">
             </div>
 
             <div class="form-group">
@@ -117,6 +135,53 @@
 
 </script>
 
+<script src="/javascripts/knowledgeGraph.js"></script>
+
+<script>
+    // queryKnowledgeGraph("duck")
+    //     .then( knowledge => {
+    //         console.log("results")
+    //         console.log(knowledge)
+    //         // console.log(knowledge[0].name.value)
+    //         // console.log(knowledge[0].abstract.value)
+    //         // console.log(knowledge[0].bird.value)
+    // })
+
+    function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
+
+    let searchKnowledge = document.getElementById('searchBird');
+
+    function populateDropdown() {
+        // console.log("search knowledge graph")
+        let birdName = document.getElementById("birdname").value
+        console.log(birdName)
+        if (birdName) {
+            queryKnowledgeGraph(birdName)
+                .then( knowledge => {
+                    console.log("results")
+                    console.log(knowledge)
+
+                    // clear dropdown
+                    const dropdown = document.getElementById("identification");
+                    removeAllChildNodes(dropdown);
+
+                    // populate dropdown
+                    for (let entry in knowledge) {
+                        insertOption(knowledge[entry], entry)
+                    }
+                })
+        }
+
+    }
+    searchKnowledge.addEventListener('click', populateDropdown);
+
+
+</script>
 
 </body>
 

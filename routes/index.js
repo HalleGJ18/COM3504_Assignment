@@ -39,7 +39,7 @@ router.get('/add', function(req, res, next) {
  * Forwards the bird creation to the Sighting controller
 */
 router.post('/add',upload.single('myImg'), function(req, res) {
-  // console.log(req)
+  // console.log(req.body)
   sighting.create(req,res);
 });
 
