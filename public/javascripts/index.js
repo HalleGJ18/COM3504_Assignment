@@ -138,8 +138,9 @@ function getLocation() {
             fetch(queryGoogle)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data.results[0].formatted_address)
                     console.log(data.results[0].address_components[0].short_name)
-                    document.getElementById('location').value = data.results[0].address_components[0].short_name;
+                    document.getElementById('location').value = data.results[0].formatted_address;
 
                 })
                 .catch(error => {
