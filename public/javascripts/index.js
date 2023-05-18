@@ -133,13 +133,11 @@ function getLocation() {
 
             var queryGoogle = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
             position.coords.latitude + "," + position.coords.longitude +
-            "&key=AIzaSyBIevfSZ8UswBN6y6iXAeZdj6ryAteCizk"
+            "&key=GOOGLE_API_KEY"
 
             fetch(queryGoogle)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.results[0].formatted_address)
-                    console.log(data.results[0].address_components[0].short_name)
                     document.getElementById('location').value = data.results[0].formatted_address;
 
                 })
