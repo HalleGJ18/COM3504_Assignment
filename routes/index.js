@@ -52,7 +52,14 @@ router.get('/birds', function(req, res, next) {
     if (err) return next(err);
     for(let bird of birds) {
       sightingsList.push(bird)
-      bird.img = bird.img.slice(7)
+      try {
+        bird.img = bird.img.slice(7)
+      }
+      catch (err) {
+        console.log("no img")
+        bird.img = "no img" +
+            ""
+      }
       bird.detailedLink = "/bird?id=" + bird.id
     }
     res.render('list', {
@@ -70,7 +77,14 @@ router.get('/bird', function(req, res, next) {
   Sighting.find({_id: req.query.id}, function(err, bird) {
     if (err) return next(err);
 
-    bird[0].img = bird[0].img.slice(7)
+    try {
+      bird[0].img = bird[0].img.slice(7)
+    }
+    catch (err) {
+      console.log("no img")
+      bird[0].img = "no img"
+    }
+
 
     res.render('bird', {
       title: 'One birdo',

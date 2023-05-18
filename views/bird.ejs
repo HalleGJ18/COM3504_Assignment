@@ -115,14 +115,14 @@
         });
     }
 
-    getValueFromObjectStore('UserInformation', 'users', 1)
-        .then(value => {
-            console.log('Retrieved value:', value['username']);
-            document.getElementById('addedBy').value = value['username'];
-        })
-        .catch(error => {
-            console.error('Error retrieving value:', error);
-        });
+    // getValueFromObjectStore('UserInformation', 'users', 1)
+    //     .then(value => {
+    //         console.log('Retrieved value:', value['username']);
+    //         document.getElementById('addedBy').value = value['username'];
+    //     })
+    //     .catch(error => {
+    //         console.error('Error retrieving value:', error);
+    //     });
 
 </script>
 
