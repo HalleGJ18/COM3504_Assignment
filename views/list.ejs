@@ -31,16 +31,17 @@
 <div class="container" style="max-width: 95%">
     <table class="table table-bordered" id="sightingsTable">
         <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Photo</th>
-                <th scope="col">Bird Name</th>
-                <th scope="col">Date</th>
-                <th scope="col">Location</th>
-                <th scope="col">Description</th>
-                <th scope="col">Added by</th>
-                <th scope="col">Detailed view</th>
-            </tr>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Bird Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">Location</th>
+            <th scope="col">Description</th>
+            <th scope="col">Identification</th>
+            <th scope="col">Added by</th>
+            <th scope="col">Detailed view</th>
+        </tr>
         </thead>
         <tbody id="sightingsTableData">
 
@@ -56,6 +57,7 @@
                 <td><%= new Date(data[i].date).toLocaleString() %></td>
                 <td><%= data[i].location %></td>
                 <td><%= data[i].description %></td>
+                <td><%= data[i].identification %></td>
                 <td><%= data[i].addedBy %></td>
                 <td><a href="<%= data[i].detailedLink %>" class="btn btn-outline-primary stretched-link">Detailed view</a></td>
             </tr>

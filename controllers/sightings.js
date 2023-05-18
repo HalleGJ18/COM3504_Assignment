@@ -15,7 +15,10 @@ exports.create = function (req, res) {
         location: userData.location,
         description: userData.description,
         addedBy: userData.addedBy,
-        img: req.file.path
+        img: req.file.path,
+        identification: userData.identifiedName,
+        abstract: userData.abstract,
+        uri: userData.uri
     });
 
     sighting.save(function (err, results) {

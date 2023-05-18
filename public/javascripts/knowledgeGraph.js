@@ -28,8 +28,9 @@ function queryKnowledgeGraph(subject) {
 
 function insertOption(entry, index) {
     const dropdown = document.getElementById("identification");
-    let relevant = entry.name.value + ", "+ entry.bird.value
-    console.log("relevant", relevant)
-    let optionHTML = '<option value= `' + relevant + ' `>'+entry.name.value+'</option>'
+    // let relevant = entry.name.value + ", "+ entry.bird.value
+    // console.log("relevant", relevant)
+    console.log("entry", entry)
+    let optionHTML = '<option value= ' + index +  '>' +entry.name.value+'</option>'
     dropdown.insertAdjacentHTML("beforeend", optionHTML)
 }

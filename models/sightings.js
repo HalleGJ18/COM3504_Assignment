@@ -18,6 +18,9 @@ var SightingSchema = new Schema(
         location: {type: String, required: true, max: 100},
         description: {type: String, required: true, max: 100},
         addedBy: {type: String, max:100},
+        identification: {type: String, max:100},
+        abstract: {type: String, max:10000},
+        uri: {type: String, max:100},
         img: {type: String },
             chatMessages: [chatMessagesSchema]
     }
