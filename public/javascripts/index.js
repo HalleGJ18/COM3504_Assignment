@@ -131,14 +131,15 @@ function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
 
-            var query = 'http://api.positionstack.com/v1/reverse?access_key=359ea6dd8c8570c7df19d440a9de2234&query=' +
-                position.coords.latitude + "," +
-                position.coords.longitude
+            var queryGoogle = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+            position.coords.latitude + "," + position.coords.longitude +
+            "&key=AIzaSyBIevfSZ8UswBN6y6iXAeZdj6ryAteCizk"
 
-            fetch(query)
+            fetch(queryGoogle)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('location').value = data.data[0].locality;
+                    console.log(data.results[0].address_components[0].short_name)
+                    document.getElementById('location').value = data.results[0].address_components[0].short_name;
 
                 })
                 .catch(error => {

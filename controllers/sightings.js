@@ -20,8 +20,9 @@ exports.create = function (req, res) {
     sighting.save(function (err, results) {
         if (err)
             res.status(500).send('Invalid data!');
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(sighting));
+        //res.setHeader('Content-Type', 'application/json');
+        //res.send(JSON.stringify(sighting));
+        res.redirect("/birds");
 
     });
 

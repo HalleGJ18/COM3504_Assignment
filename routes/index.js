@@ -141,7 +141,7 @@ router.post('/edit', function(req, res) {
       description: description} })
       .then(() => {
         console.log('Sighting updated successfully');
-        alert("Sighting updated successfully");
+        res.redirect("/birds");
       })
       .catch((error) => {
         console.log('Error updating sighting:', error);
