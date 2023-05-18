@@ -22,7 +22,6 @@ self.addEventListener('install', event => {
                 '/javascripts/sync.js',
                 '/stylesheets/style.css',
                 '/partials/header.ejs',
-                '/partials/footer.ejs',
                 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css',
                 'https://code.jquery.com/jquery-3.2.1.slim.min.js',
                 'https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js',
