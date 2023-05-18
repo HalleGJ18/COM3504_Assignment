@@ -20,7 +20,7 @@ filled in using the Google geolocation API. Users can also query the Knowledge G
 
 When offline, users can create a new sighting, that is added into the project once they go online.
 
-<<IMAGE OF CREATING A NEW SIGHTING>>
+![Screenshot](Screenshots/Add Bird Form.png)
 
 **Browse a list of all sightings** - users can view a list of all sightings that have been added to
 the application. They can also choose to view detailed information about each sighting by clicking the
@@ -28,23 +28,23 @@ the application. They can also choose to view detailed information about each si
 
 When offline, the user sees a list of the sightings that they have created.
 
-<<IMAGE OF BROWSING LIST OF SIGHTINGS>>
+![Screenshot](Screenshots/Birds List.png)
 
 **View a sighting in detail** - Each sighting has its own detailed view. This detailed view
 reviews a lot more information about the bird based on its identification.
 
 When offline, the user can see the detailed view of the sightings they have created.
 
+![Screenshot](Screenshots/Bird Detailed View.png)
+
 **Edit a sighting** - if the username of the current user matches the creator of a sighting, the user is able to
 edit their sighting.
 
 When offline, the user can edit their sighting- the changes will be uploaded when they go online again.
 
-<<IMAGE OF EDIT SIGHTING>>
-
 **Chat with other users** - each sighting has a chat associated with it. Users can chat with other
 users about the birds. The history of messages is stored in MongoDB and displayed
 when a sighting is loaded.
 
-<<IMAGE OF CHAT>>
+![Screenshot](Screenshots/Chat.png)
 
