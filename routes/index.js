@@ -59,7 +59,6 @@ router.get('/birds', function(req, res, next) {
         bird.img = bird.img.slice(7)
       }
       catch (err) {
-        console.log("no img")
         bird.img = "no img" +
             ""
       }
@@ -84,7 +83,6 @@ router.get('/bird', function(req, res, next) {
       bird[0].img = bird[0].img.slice(7)
     }
     catch (err) {
-      console.log("no img")
       bird[0].img = "no img"
     }
 

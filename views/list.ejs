@@ -118,33 +118,21 @@
 
     // get current user
     let currentUser;
-    console.log("current user: ", currentUser)
 
     getValueFromObjectStore('UserInformation', 'users', 1)
         .then(value => {
-            // console.log('Retrieved value:', value['username']);
-            currentUser = value['username']
-            // document.getElementById('addedBy').value = value['username'];
 
             // store all sightings created by current user if not ""
-            console.log("current user: ", currentUser);
-
-            <!--console.log(<%-JSON.stringify(data)%>)-->
 
             const asArray = Object.entries(<%-JSON.stringify(data)%>);
 
 
             const filtered = asArray.filter( function (item) {
-                // console.log(item[1])
                 return item[1].addedBy === currentUser
 
             });
-            // console.log(filtered)
 
             const userBirds = Object.fromEntries(filtered);
-            // console.log(userBirds)
-            // console.log("yes")
-
 
             // upload to indexeddb
             var db;
@@ -163,27 +151,15 @@
                 }
 
                 // add sightings
-
-                // filtered.forEach(t.add)
-                // t.add(userBirds)
                 for (const bird in userBirds) {
-                    console.log("bird: ",userBirds[bird])
 
                     let b = {
                         id : bird,
                         sighting : userBirds[bird]
                     }
-                    // t.add(b)
-                    // console.log(userBirds[bird])
                     t.add(userBirds[bird])
                 }
-
-
             };
-
-
-
-
         })
         .catch(error => {
             console.error('Error retrieving value:', error);

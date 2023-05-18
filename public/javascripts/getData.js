@@ -81,12 +81,8 @@ function getAllFromObjectStore(dbName, storeName) {
     });
 }
 
-function getURL() {
-    console.log(window.location.href)
-    return window.location.href;
-}
-
 function getURLParams() {
+    // extract bird id from url
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     console.log(id)

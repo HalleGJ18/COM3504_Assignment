@@ -1,5 +1,6 @@
 
 function queryKnowledgeGraph(subject) {
+    // query knowledge graph using bird name from user input
     return new Promise((resolve, reject) => {
         const endpointUrl = 'https://dbpedia.org/sparql';
         const  sparqlQuery= `PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbprop: <http://dbpedia.org/property/> SELECT ?bird ?name ?abstract WHERE { ?bird rdf:type dbo:Bird ; dbprop:name ?name OPTIONAL {?bird dbo:abstract ?abstract . FILTER langMatches(lang(?abstract),"en")} FILTER  regex(?name, "`+subject+`", "i" ) }`;
@@ -11,11 +12,6 @@ function queryKnowledgeGraph(subject) {
                 // The results are in the 'data' object
                 var bindings = data.results.bindings;
 
-                // console.log(bindings[0].name.value)
-                // console.log(bindings[0].abstract.value)
-                // console.log(bindings[0].bird.value)
-
-                // console.log(bindings)
                 if (bindings) {
                     resolve(bindings)
                 } else {
@@ -27,10 +23,8 @@ function queryKnowledgeGraph(subject) {
 }
 
 function insertOption(entry, index) {
+    // add an option to the dropdown menu
     const dropdown = document.getElementById("identification");
-    // let relevant = entry.name.value + ", "+ entry.bird.value
-    // console.log("relevant", relevant)
-    console.log("entry", entry)
     let optionHTML = '<option value= ' + index +  '>' +entry.name.value+'</option>'
     dropdown.insertAdjacentHTML("beforeend", optionHTML)
 }

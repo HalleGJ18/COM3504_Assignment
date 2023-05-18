@@ -68,8 +68,10 @@
 
 
 <script>
+  // retrieve bird information from indexeddb by id from url
+  // populate field accordingly
+
   let bird_id = getURLParams();
-  // let d = getEntryFromObjectStore("UserInformation", "prevBirds", bird_id);
 
   getEntryFromObjectStore("UserInformation", "prevBirds", bird_id)
           .then(value => {

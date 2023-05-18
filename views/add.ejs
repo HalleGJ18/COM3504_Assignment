@@ -185,20 +185,18 @@
 
     function submitKnowledge() {
         let identity = parseInt(document.getElementById('identification').value)
-        console.log(identity)
-        console.log(typeof identity)
 
         let birdName = document.getElementById("birdname").value
-        console.log(birdName)
+        // console.log(birdName)
         if (birdName) {
             queryKnowledgeGraph(birdName)
                 .then( knowledge => {
-                    console.log("results")
+                    // console.log("results")
                     // console.log(knowledge)
 
                     // get selected
                     let selected = knowledge[identity]
-                    console.log(selected)
+                    // console.log(selected)
 
                     // find hidden fields
 
@@ -206,9 +204,6 @@
                     document.getElementById('abstract').value = selected.abstract.value
                     document.getElementById('uri').value = selected.bird.value
 
-                    console.log(document.getElementById('identifiedName').value)
-                    console.log(document.getElementById('abstract').value)
-                    console.log(document.getElementById('uri').value)
                 })
         }
     }

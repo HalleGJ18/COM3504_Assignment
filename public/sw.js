@@ -55,24 +55,22 @@ self.addEventListener('activate', event => {
                 db = request.result;
                 //creating object
 
+                // object store for username
                 if(!db.objectStoreNames.contains("users")){
                     const userObjStore = db.createObjectStore("users", { keyPath: "id", autoIncrement: true});
                     console.log("create store")
                 }
 
+                // object store for sightings from mongodb
                 if(!db.objectStoreNames.contains("prevBirds")){
                     const prevBirdObjStore = db.createObjectStore("prevBirds", { keyPath: "_id", autoIncrement: false});
                     console.log("create store")
                 }
 
+                // object store for sightings created offline
                 if(!db.objectStoreNames.contains("birds"))
                 {
                     const objectStore = db.createObjectStore("birds", { keyPath: "id", autoIncrement: true});
-                    // objectStore.createIndex('name','name', {unique:false});
-                    // objectStore.createIndex('date','date', {unique:false});
-                    // objectStore.createIndex('location','location', {unique:false});
-                    // objectStore.createIndex('description','description', {unique:false});
-                    // objectStore.createIndex('addedBy','addedBy', {unique:false});
 
                 }
             }
@@ -94,26 +92,22 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', function(event) {
 
-    // console.log('Service Worker: Fetch', event.request.url);
 
     event.respondWith(
         fetch(event.request).catch(function() {
             const url = (new URL(event.request.url));
+
             if (url.pathname === "/") {
-                console.log(url.pathname)
-                console.log("home")
+                // catch home page
                 return caches.match('/views/index.html');
             } else if (url.pathname === "/birds") {
-                console.log(url.pathname)
-                console.log("birds list")
+                // catch sightings list
                 return caches.match('/views/list.html');
             } else if (url.pathname === "/add") {
-                console.log(url.pathname)
-                console.log("add")
+                // catch add sighting
                 return caches.match('/views/add.html');
             } else if (url.pathname === "/bird") {
-                console.log(url.pathname)
-                console.log("bird details")
+                // catch sighting details
                 return caches.match('/views/bird.html');
             }
             async function requestBackgroundSync() {
@@ -131,8 +125,7 @@ self.addEventListener('fetch', function(event) {
 
 self.addEventListener('sync', event => {
     if (event.tag === 'bird-sync') {
-        console.log("sync time")
-        // event.waitUntil(sendToServer());
+        console.log("sync event")
         event.waitUntil(uploadSightings())
     }
 });
@@ -140,18 +133,13 @@ self.addEventListener('sync', event => {
 
 
 function uploadSightings() {
-    console.log("upload")
     // loop through indexeddb
-        // make post request to /add
-    //clear indexeddb
+    // make post request to /add
+    // clear indexeddb
     getAllFromObjectStore('UserInformation', 'birds')
         .then(values => {
-            console.log(values);
             for (let value in values) {
-                // insertRows(values[value], value)
-                // console.log(value)
-                console.log(values[value])
-                // upload sighting
+                // upload sighting to server
                 sendQuery("/sync", values[value])
 
             }
@@ -159,12 +147,12 @@ function uploadSightings() {
             const request = indexedDB.open('UserInformation');
             request.onsuccess = () => {
                 db = request.result;
-                console.log("success");
                 const t = db.transaction(["birds"], 'readwrite').objectStore("birds");
-                // clear db
+
+                // clear db of offline sightings
                 const clearStoreReq = t.clear()
                 clearStoreReq.onsuccess = (event) => {
-                    console.log("cleared")
+                    console.log("offline sightings cleared")
                 }
             }
 
@@ -216,6 +204,7 @@ function getAllFromObjectStore(dbName, storeName) {
 
 
 function sendQuery(url, data) {
+    // send post request to server for sync event
     fetch('http://localhost:3000/sync', {
         method: 'POST',
         body: JSON.stringify({
