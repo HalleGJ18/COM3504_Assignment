@@ -41,7 +41,6 @@
       <p class="card-text" id="location_field">Location: </p>
       <p class="card-text" id="description_field">Description: </p>
       <p class="card-text" id="identification_field">Identification: (knowledge graph result here)</p>
-<!--      <p class="card-text" id="uri"></p>-->
       <a href="" id="uri"></a>
       <p class="card-text" id="abstract_field">Abstract: </p>
     </div>
@@ -91,6 +90,8 @@
             document.getElementById('addedby_field').innerHTML = "Added by: "+value['addedBy'];
             document.getElementById('title_field').innerHTML = "Sighting details for "+value['bird_name']
             document.getElementById('chat_title').innerHTML = "Chat for "+value['bird_name']+":"
+
+            document.getElementById('image_field').src = "data:image/png;base64, "+value['base64Data']
 
           })
           .catch(error => {

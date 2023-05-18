@@ -1,6 +1,6 @@
 // import getAllFromObjectStore from "/javascripts/getData.js";
 
-const CACHE_NAME = 'SightingsAppV2'; // update the name to get the sw to recache if resources have been updated
+const CACHE_NAME = 'SightingsAppV1'; // update the name to get the sw to recache if resources have been updated
 
 
 // Use the install event to pre-cache all initial resources.

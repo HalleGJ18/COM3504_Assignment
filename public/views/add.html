@@ -93,7 +93,11 @@
                 let location = document.querySelector('#location').value;
                 let description = document.querySelector('#description').value;
                 let addedBy = value['username'];
+
                 const img = document.querySelector('#myImage').files[0];
+
+                let imgBuffer = fs.readFileSync(img);
+                const base64Data = imgBuffer.toString('base64');
 
 
                 var db;
@@ -108,7 +112,7 @@
                     const t = db.transaction(["birds"],'readwrite').objectStore("birds");
 
                     //adding data into indexedDb with name UserInformation
-                    t.add({image: img, bird_name, date, location, description, addedBy});
+                    t.add({base64Data, bird_name, date, location, description, addedBy});
 
 
                     // trigger sync event to upload sightings when back online
