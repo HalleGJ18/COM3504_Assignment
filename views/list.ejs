@@ -121,6 +121,8 @@
 
     getValueFromObjectStore('UserInformation', 'users', 1)
         .then(value => {
+        
+            let currentUser = value['username']
 
             // store all sightings created by current user if not ""
 
